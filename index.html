@@ -2,6 +2,47 @@
 <html>
     <head>
         <style>
+             body, html {
+                height: 100%;
+                background-color: black;
+                color: white;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+        </style>        
+    </head>
+    <body>
+        <div style="width:100%;height:100%;max-width:100%">
+            <div id="game"></div>
+        </div>
+        <script>
+            EJS_player = "#game";
+            EJS_core = "mednafen_psx_hw";
+            EJS_gameName = "RPG Maker (USA)";
+            EJS_color = "#000000";
+            EJS_startOnLoaded = false;
+            EJS_pathtodata = "data/";
+            EJS_loadStateURL = "RPG Maker (USA).state";
+            EJS_gameUrl = "RPG Maker (USA).zip";
+            EJS_biosUrl = "scph5501.bin";
+												EJS_backgroundImage = "CoverNSK.jpg"
+        </script>
+        <script src="data/loader.js"></script>
+    </body>
+</html>
+
+ChatGPT
+To insert an image that will display in the center of the screen, you can add an <img> tag inside the <body> element and use CSS to center it. Here's how you can modify your HTML code to achieve that:
+
+html
+Copy code
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
             body, html {
                 height: 100%;
                 background-color: black;
@@ -23,7 +64,7 @@
         </style>        
     </head>
     <body>
-        <img src="CoverNSK.jpg" alt="Centered Image">
+        <img src="path_to_your_image.jpg" alt="Centered Image">
         
         <div style="width:100%;height:100%;max-width:100%">
             <div id="game"></div>
@@ -42,3 +83,81 @@
         <script src="data/loader.js"></script>
     </body>
 </html>
+Replace "path_to_your_image.jpg" with the actual path to your image file. This code will center the image horizontally and vertically on the screen. Adjust the max-width and max-height properties in the img CSS rule to control the size of the image if needed.
+
+
+
+User
+Can you correct the code so that the image disappears after tapping the start button?
+
+ChatGPT
+To make the image disappear after tapping the start button, you can add some JavaScript to hide the image when the start button is clicked. Here's the modified code:
+
+html
+Copy code
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body, html {
+                height: 100%;
+                background-color: black;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+
+            img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            #startButton {
+                display: none;
+            }
+        </style>        
+    </head>
+    <body>
+        <img id="centeredImage" src="path_to_your_image.jpg" alt="Centered Image">
+        <button id="startButton" onclick="startGame()">Start</button>
+        
+        <div style="width:100%;height:100%;max-width:100%">
+            <div id="game"></div>
+        </div>
+        <script>
+            function startGame() {
+                document.getElementById("centeredImage").style.display = "none";
+                document.getElementById("startButton").style.display = "none";
+                // Add your code to start the game here
+            }
+
+            EJS_player = "#game";
+            EJS_core = "mednafen_psx_hw";
+            EJS_gameName = "RPG Maker (USA)";
+            EJS_color = "#000000";
+            EJS_startOnLoaded = false;
+            EJS_pathtodata = "data/";
+            EJS_loadStateURL = "RPG Maker (USA).state";
+            EJS_gameUrl = "RPG Maker (USA).zip";
+            EJS_biosUrl = "scph5501.bin";
+        </script>
+        <script src="data/loader.js"></script>
+    </body>
+</html>
+In this code, I've added an id attribute to the <img> tag (id="centeredImage") so we can easily reference it in JavaScript. I've also added a start button (<button id="startButton" onclick="startGame()">Start</button>) with an onclick event that calls the startGame() function.
+
+The startGame() function hides both the image and the start button when it's called. You can add your game initialization code inside this function.
+
+
+
+
+
+Message ChatGPT…
+
+ChatGPT can mak
