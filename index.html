@@ -23,6 +23,7 @@
             EJS_player = "#game";
             EJS_core = "mednafen_psx_hw";
             EJS_gameName = "NSK WARRIOR";
+            EJS_fullscreenOnLoaded = true
             EJS_color = "#800000";
             EJS_backgroundImage = "/cover.png"
             EJS_backgroundColor = "#000000"
@@ -31,6 +32,96 @@
             EJS_loadStateURL = "RPG Maker (USA).state";
             EJS_gameUrl = "RPG Maker (USA).zip";
             EJS_biosUrl = "scph5501.bin";
+            EJS_VirtualGamepadSettings = [
+                {
+                    type: "button",
+                    text: "Y",
+                    id: "y",
+                    location: "right",
+                    left: 40,
+                    bold: true,
+                    input_value: 9
+                },
+                {
+                    type: "button",
+                    text: "X",
+                    id: "X",
+                    location: "right",
+                    top: 40,
+                    bold: true,
+                    input_value: 1
+                },
+                {
+                    type: "button",
+                    text: "B",
+                    id: "b",
+                    location: "right",
+                    left: 81,
+                    top: 40,
+                    bold: true,
+                    input_value: 8
+                },
+                {
+                    type: "button",
+                    text: "A",
+                    id: "a",
+                    location: "right",
+                    left: 40,
+                    top: 80,
+                    bold: true,
+                    input_value: 0
+                },
+                {
+                    type: "dpad",
+                    location: "left",
+                    left: "50%",
+                    right: "50%",
+                    joystickInput: false,
+                    inputValues: [4, 5, 6, 7]
+                },
+                {
+                    type: "button",
+                    text: "Start",
+                    id: "start",
+                    location: "center",
+                    left: 60,
+                    fontSize: 15,
+                    block: true,
+                    input_value: 3
+                },
+                {
+                    type: "button",
+                    text: "Select",
+                    id: "select",
+                    location: "center",
+                    left: -5,
+                    fontSize: 15,
+                    block: true,
+                    input_value: 2
+                }
+            ]
+            EJS_Buttons = {
+                playPause: false,
+                restart: false,
+                mute: false,
+                settings: true,
+                fullscreen: true,
+                saveState: true,
+                loadState: false,
+                screenRecord: false,
+                gamepad: true,
+                cheat: false,
+                volume: false,
+                saveSavFiles: false,
+                loadSavFiles: false,
+                quickSave: false,
+                quickLoad: false,
+                screenshot: false,
+                cacheManager: false
+            }
+            EJS_defaultOptions = {
+                'save-state-location': 'keep in browser'
+            }
         </script>
         <script src="data/loader.js"></script>
     </body>
