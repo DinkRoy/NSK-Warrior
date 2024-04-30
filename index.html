@@ -23,7 +23,6 @@
             EJS_player = "#game";
             EJS_core = "mednafen_psx_hw";
             EJS_gameName = "NSK WARRIOR";
-            EJS_fullscreenOnLoaded = true;
             EJS_color = "#800000";
             EJS_backgroundImage = "/cover.png";
             EJS_backgroundColor = "#000000";
@@ -32,6 +31,8 @@
             EJS_loadStateURL = "RPG Maker (USA).state";
             EJS_gameUrl = "RPG Maker (USA).zip";
             EJS_biosUrl = "scph5501.bin";
+            EJS_DEBUG_XX = true;
+            EJS_threads = true;
             EJS_VirtualGamepadSettings = [
                 {
                     type: "button",
@@ -80,32 +81,6 @@
                     inputValues: [4, 5, 6, 7]
                 }
             ]
-            EJS_onGameStart = function(e) {
-                (async() => {
-                    let sleep = (ms) => new Promise(r => setTimeout(r, ms));
-                    let state = "suspended";
-                    let popup;
-                    while (state === "suspended") {
-                        if (!window.AL) return;
-                        AL.currentCtx.sources.forEach(ctx => {
-                            state = ctx.gain.context.state;
-                        });
-                        if (state !== "suspended") break;
-                        if (!popup) {
-                            popup = EJS_emulator.createPopup("", {});
-                            const button = EJS_emulator.createElement("div");
-                            button.innerText = "Click to resume Emulator";
-                            button.style.width = "25%";
-                            button.style.height = "25%";
-                            popup.appendChild(button);
-                            button.style["text-align"] = "center";
-                            button.style["font-size"] = "28px";
-                        }
-                        await sleep(10);
-                    }
-                    if (popup) EJS_emulator.closePopup();
-                })();
-            }
         </script>
         <script src="data/loader.js"></script>
     </body>
