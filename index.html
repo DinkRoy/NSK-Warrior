@@ -78,29 +78,34 @@
                     right: "50%",
                     joystickInput: false,
                     inputValues: [4, 5, 6, 7]
-                },
-                {
-                    type: "button",
-                    text: "Start",
-                    id: "start",
-                    location: "right",
-                    top: 160,
-                    fontSize: 15,
-                    block: true,
-                    input_value: 3
-                },
-                {
-                    type: "button",
-                    text: "Select",
-                    id: "select",
-                    location: "left",
-                    left: 80,
-                    top: 160,
-                    fontSize: 15,
-                    block: true,
-                    input_value: 2
                 }
             ]
+            EJS_onGameStart = function(e) {
+                (async() => {
+                    let sleep = (ms) => new Promise(r => setTimeout(r, ms));
+                    let state = "suspended";
+                    let popup;
+                    while (state === "suspended") {
+                        if (!window.AL) return;
+                        AL.currentCtx.sources.forEach(ctx => {
+                            state = ctx.gain.context.state;
+                        });
+                        if (state !== "suspended") break;
+                        if (!popup) {
+                            popup = EJS_emulator.createPopup("", {});
+                            const button = EJS_emulator.createElement("div");
+                            button.innerText = "Click to resume Emulator";
+                            button.style.width = "25%";
+                            button.style.height = "25%";
+                            popup.appendChild(button);
+                            button.style["text-align"] = "center";
+                            button.style["font-size"] = "28px";
+                        }
+                        await sleep(10);
+                    }
+                    if (popup) EJS_emulator.closePopup();
+                })();
+            }
         </script>
         <script src="data/loader.js"></script>
     </body>
