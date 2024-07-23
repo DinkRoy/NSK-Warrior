@@ -13,21 +13,26 @@
                 margin: 0;
                 overflow: hidden;
             }
-        </style>        
+        </style>   
+        <script src="//static.fliphtml5.com/web/js/plugin/LightBox/js/fliphtml5-light-box-api-min.js"></script>
     </head>
     <body>
-        <div style="width:100%;height:100%;max-width:100%">
+        <button type="button" data-rel="fh5-light-box-demo"
+            data-href="https://online.fliphtml5.com/cxjjb/qdlo/"
+            data-width="400" data-height="250" data-title="">Original Booklet
+        </button>
+        <div style="width:100%;height:95%;max-width:100%">
             <div id="game"></div>
         </div>
         <script>
             EJS_player = "#game";
             EJS_core = "mednafen_psx_hw";
-            EJS_gameName = "NSK WARRIOR";
+            EJS_gameName = "NSK WARRIOR v1.1";
             EJS_color = "#800000";
-            EJS_backgroundImage = "/cover.png";
+            EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/cover_image.png";
             EJS_backgroundColor = "#000000";
             EJS_startOnLoaded = false;
-            EJS_pathtodata = "data/";
+            EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
             EJS_loadStateURL = "RPG Maker (USA).state";
             EJS_gameUrl = "RPG Maker (USA).zip";
             EJS_biosUrl = "scph5501.bin";
@@ -73,13 +78,12 @@
                 {
                     type: "dpad",
                     location: "left",
-                    left: "50%",
                     right: "50%",
                     joystickInput: false,
                     inputValues: [4, 5, 6, 7]
                 }
             ]
         </script>
-        <script src="data/loader.js"></script>
+        <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
     </body>
 </html>
