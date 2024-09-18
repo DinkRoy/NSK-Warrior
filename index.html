@@ -5,22 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="stylesheet" href="styles.css">
-    <script src="/booklet/jquery.min.js"></script>
+    <script src="booklet/jquery.min.js"></script>
 </head>
 <body> 
     <div class="container" id="container">         
         <input type="checkbox" id="toggleButton" class="toggle-button">
         <label for="toggleButton">
-            <img src="https://nsk-warrior.netlify.app/images/manual_icon_sm.png" alt="Game Booklet">
+            <img src="/images/manual_icon_sm.png" alt="Game Booklet">
         </label>        
             <div id="book">
                 <!-- Pages added here from script --> 
             </div> 
         <div id="game"></div>          
     </div>
-    <audio id="flip" src="/sound/page-turn.mp3"></audio>
-    <audio id="slide1" src="/sound/slide_in.mp3"></audio>
-    <audio id="slide2" src="/sound/slide_out.mp3"></audio>
+    <audio id="flip" src="sound/page-turn.mp3"></audio>
+    <audio id="slide1" src="sound/slide_in.mp3"></audio>
+    <audio id="slide2" src="sound/slide_out.mp3"></audio>
     <div id="blurBackground" class="blurred-background" style="display: none;"></div>
     
     <script>
@@ -28,7 +28,7 @@
         EJS_core = "mednafen_psx_hw";
         EJS_gameName = "NSK WARRIOR v1.1";
         EJS_color = "#800000";
-        EJS_backgroundImage = "/images/title.gif";
+        EJS_backgroundImage = "images/title.gif";
         EJS_backgroundColor = "#000000";
         EJS_startOnLoaded = false;
         EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
@@ -87,7 +87,7 @@
             }
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
-    <script src="/booklet/turn.min.js"></script>   
-    <script src=/booklet/panzoom.min.js"></script>   
+    <script src="booklet/turn.min.js"></script>   
+    <script src=booklet/panzoom.min.js"></script>   
 </body>
 </html>
