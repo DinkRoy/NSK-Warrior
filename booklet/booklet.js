@@ -17,7 +17,7 @@ for (let i = 1; i <= 20; i++) {
     }
 }
 
-// Handle page turning with click, prevent page turn after pan action
+// Handle page turning with click & prevent page turn after pan action
 function attachPageTurnListeners() {
   let isTurning = false;
   let isDragging = false;
