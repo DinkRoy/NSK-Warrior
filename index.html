@@ -1,85 +1,94 @@
 <!DOCTYPE html>
-<html>
-    <head>
-    <meta name = viewport content = "width = device-width, initial-scale = 1">
-        <style>
-             body, html {
-                height: 100%;
-                background-color: black;
-                color: white;
+<html lang="en">
+<head>
+    <title>NSK Warrior</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="styles.css">
+    <script src="booklet/jquery.min.js"></script>
+</head>
+<body> 
+    <div class="container" id="container">         
+        <input type="checkbox" id="toggleButton" class="toggle-button">
+        <label for="toggleButton">
+            <img src="images/manual_icon_sm.png" alt="Game Booklet">
+        </label>        
+            <div id="book">
+                <!-- Pages added here from script --> 
+            </div> 
+        <div id="game"></div>          
+    </div>
+    <audio id="flip" src="sound/page-turn.mp3"></audio>
+    <audio id="slide1" src="sound/slide_in.mp3"></audio>
+    <audio id="slide2" src="sound/slide_out.mp3"></audio>
+    <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+    
+    <script>
+        EJS_player = "#game";
+        EJS_core = "mednafen_psx_hw";
+        EJS_gameName = "NSK WARRIOR v1.1";
+        EJS_color = "#800000";
+        EJS_backgroundImage = "https://nsk-warrior.netlify.app/images/title.gif";
+        EJS_backgroundColor = "#000000";
+        EJS_startOnLoaded = false;
+        EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
+        EJS_loadStateURL = "RPG Maker (USA).state";
+        EJS_gameUrl = "RPG Maker (USA).zip";
+        EJS_biosUrl = "scph5501.bin";
+        EJS_VirtualGamepadSettings = [
+            {
+                type: "button",
+                text: "Y",
+                id: "y",
+                location: "right",
+                left: 40,
+                bold: true,
+                input_value: 9
+            },
+            {
+                type: "button",
+                text: "X",
+                id: "X",
+                location: "right",
+                top: 40,
+                bold: true,
+                input_value: 1
+            },
+            {
+                type: "button",
+                text: "B",
+                id: "b",
+                location: "right",
+                left: 81,
+                top: 40,
+                bold: true,
+                input_value: 8
+            },
+            {
+                type: "button",
+                text: "A",
+                id: "a",
+                location: "right",
+                left: 40,
+                top: 80,
+                bold: true,
+                input_value: 0
+            },
+            {
+                type: "dpad",
+                location: "left",
+                right: "50%",
+                joystickInput: false,
+                inputValues: [4, 5, 6, 7]
             }
-
-            body {
-                margin: 0;
-                overflow: hidden;
+        ]
+        EJS_Buttons = {
+                restart: false
             }
-        </style>        
-    </head>
-    <body>
-        <div style="width:100%;height:100%;max-width:100%">
-            <div id="game"></div>
-        </div>
-        <script>
-            EJS_player = "#game";
-            EJS_core = "mednafen_psx_hw";
-            EJS_gameName = "NSK WARRIOR";
-            EJS_color = "#800000";
-            EJS_backgroundImage = "/cover.png";
-            EJS_backgroundColor = "#000000";
-            EJS_startOnLoaded = false;
-            EJS_pathtodata = "data/";
-            EJS_loadStateURL = "RPG Maker (USA).state";
-            EJS_gameUrl = "RPG Maker (USA).zip";
-            EJS_biosUrl = "scph5501.bin";
-            EJS_VirtualGamepadSettings = [
-                {
-                    type: "button",
-                    text: "Y",
-                    id: "y",
-                    location: "right",
-                    left: 40,
-                    bold: true,
-                    input_value: 9
-                },
-                {
-                    type: "button",
-                    text: "X",
-                    id: "X",
-                    location: "right",
-                    top: 40,
-                    bold: true,
-                    input_value: 1
-                },
-                {
-                    type: "button",
-                    text: "B",
-                    id: "b",
-                    location: "right",
-                    left: 81,
-                    top: 40,
-                    bold: true,
-                    input_value: 8
-                },
-                {
-                    type: "button",
-                    text: "A",
-                    id: "a",
-                    location: "right",
-                    left: 40,
-                    top: 80,
-                    bold: true,
-                    input_value: 0
-                },
-                {
-                    type: "dpad",
-                    location: "left",
-                    left: "50%",
-                    right: "50%",
-                    joystickInput: false,
-                    inputValues: [4, 5, 6, 7]
-                }
-            ]
-        </script>
-        <script src="data/loader.js"></script>
-    </body>
+    </script>
+    <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
+    <script src="/booklet/turn.min.js"></script>   
+    <script src="/booklet/panzoom.min.js"></script>  
+    <script src="/booklet/booklet.js"></script>
+</body>
 </html>

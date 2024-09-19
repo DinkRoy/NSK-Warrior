@@ -1,0 +1,140 @@
+body,
+html {
+  height: 100%;
+  background-color: black;
+  color: white;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.toggle-button {
+  display: none;
+}
+
+.toggle-button + label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #800000;
+  color: white;
+  padding: 8px 10px;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.toggle-button + label img {
+  width: 40px;
+  height: auto;
+}
+
+.toggle-button + label:hover {
+  background-color: #a00000;
+  transform: scale(1.1);
+}
+
+.toggle-button:not(:checked) + label {
+  background-color: #800000;
+  transform: scale(1);
+}
+
+.toggle-button:checked + label {
+  background-color: #a00000;
+  transform: scale(1.1);
+}
+
+.toggle-button:checked ~ #book {
+  left: 0;
+  animation: rollIn;
+  animation-duration: 0.7s;
+}
+
+#game {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  z-index: 1;
+  touch-action: none;
+}
+
+#book {
+  position: relative;
+  width: 400px;
+  height: 318px;
+  z-index: 2;
+  left: -1500px;
+  transition: margin-left 0.2s ease-in-out, left 0.6s ease !important;
+  -webkit-transition: margin-left 0.2s ease-in-out, left 0.6s ease !important;
+  animation-name: rollOut;
+  animation-duration: 0.7s;
+}
+
+@keyframes rollIn {
+  from {
+    transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);
+  }
+
+  to {
+    transform: translate3d(1, 0, 0, 0);
+  }
+}
+
+.rollIn {
+  animation-name: rollIn;
+}
+
+@keyframes rollOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(100%, 0, 0) rotate3d(0, 0, 1, 120deg);
+  }
+}
+
+.rollOut {
+  animation-name: rollOut;
+}
+
+#page {
+  height: 100%;
+  width: 100%;
+}
+
+#page img {
+  width: 100.5%;
+  height: 100.5%;
+  object-fit: cover;
+}
+
+.blurred-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  z-index: 1;
+  touch-action: none;
+}
