@@ -39,6 +39,7 @@ body {
   padding: 8px 10px;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.3s;
+  animation: hideButton 2s, slideIn .3s 2s;
 }
 
 .toggle-button + label img {
@@ -65,6 +66,34 @@ body {
   left: 0;
   animation: rollIn;
   animation-duration: 0.7s;
+}
+
+@keyframes slideIn {
+  0% {
+  transform: translateX(-80px);
+  }
+  100% {
+  transform: translateX(0);
+  }
+}
+
+.slideIn {
+  animation-name: slideIn;
+}
+
+@keyframes hideButton {
+  0% {
+  opacity: 0;       
+  transform: translateX(0);
+  }
+  100% {
+  opacity: 0;        
+  transform: translateX(-80px);
+  }
+}
+
+.hideButton {
+  animation-name: hideButton;
 }
 
 #game {
