@@ -138,3 +138,10 @@ body {
   z-index: 1;
   touch-action: none;
 }
+
+@media (min-width: 1200px) {
+  #book {
+  width: 800px;
+  height: 636px;
+  }
+}
