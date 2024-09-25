@@ -12,8 +12,8 @@
             "type": "image/ico"
         },
         {
-            "src": "icon-512x512.png",
-            "sizes": "512x512",
+            "src": "/images/manual_icon_sm.png",
+            "sizes": "72x72",
             "type": "image/png"
         }
     ]
