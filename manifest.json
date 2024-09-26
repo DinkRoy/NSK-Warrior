@@ -1,20 +1,16 @@
 {
     "name": "NSK Warrior",
     "short_name": "NSK Warrior",
-    "start_url": "/",
+    "start_url": "index.html",
     "display": "standalone",
     "background_color": "#000000",
     "theme_color": "#000000",
+    "orientation": "landscape-primary",
     "icons": [
         {
             "src": "favicon.ico",
             "sizes": "254x254",
             "type": "image/ico"
-        },
-        {
-            "src": "/images/manual_icon_sm.png",
-            "sizes": "72x72",
-            "type": "image/png"
         }
     ]
 }
