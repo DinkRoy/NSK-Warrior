@@ -3,8 +3,14 @@ const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
-    '/script.js',
-    // Add other assets here
+    '/RPG Maker (USA).zip',
+    '/*.state',
+    '/images/*',
+    '/sound/*',
+    '/booklet/pages/*',
+    '/booket/booklet.js',
+    '/booklet/panzoom.min.js',
+    '/booklet/turn.min.js',
 ];
 
 self.addEventListener('install', event => {
