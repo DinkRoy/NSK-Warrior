@@ -5,6 +5,7 @@ const urlsToCache = [
     '/styles.css',
     '/RPG Maker (USA).zip',
     '/RPG Maker (USA).state',
+    '/scph5501.bin',
     '/images/manual_icon_sm.png',
     '/images/title.gif',
     '/sound/page-turn.mp3',
