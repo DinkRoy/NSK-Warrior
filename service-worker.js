@@ -36,7 +36,7 @@ const urlsToCache = [
     '/booklet/turn.min.js',
     'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js', 
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.js',
-    'https://cdn.emulatorjs.org/4.0.9/data/loader.js''
+    'https://cdn.emulatorjs.org/4.0.9/data/loader.js',
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.css',
 ];
 
