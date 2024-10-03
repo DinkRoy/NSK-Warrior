@@ -4,12 +4,13 @@ const urlsToCache = [
     '/index.html',
     '/styles.css',
     '/script.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js', // Example CDN resource
     // Add other essential assets here
 ];
 
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
+        caches.open(APP_CACHE)
             .then(cache => {
                 return cache.addAll(urlsToCache);
             })
@@ -18,7 +19,7 @@ self.addEventListener('install', event => {
 
 // Activate the service worker
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
+    const cacheWhitelist = [APP_CACHE];
     event.waitUntil(
         caches.keys().then(keyList => {
             return Promise.all(keyList.map(key => {
@@ -30,6 +31,7 @@ self.addEventListener('activate', event => {
     );
 });
 
+// Fetch event to handle caching and partial responses
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
@@ -47,6 +49,8 @@ self.addEventListener('fetch', event => {
                             cache.put(event.request, responseToCache);
                         });
                     return networkResponse;
+                }).catch(() => {
+                    return caches.match(event.request);
                 });
             })
     );
