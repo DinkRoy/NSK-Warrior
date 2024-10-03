@@ -34,7 +34,7 @@ const urlsToCache = [
     '/booket/booklet.js',
     '/booklet/panzoom.min.js',
     '/booklet/turn.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js', // Example CDN resource
+    'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js', 
     // Add other essential assets here
 ];
 
