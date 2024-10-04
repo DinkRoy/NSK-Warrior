@@ -38,6 +38,7 @@ const urlsToCache = [
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.js',
     'https://cdn.emulatorjs.org/4.0.9/data/loader.js',
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.css',
+    'https://cdn.emulatorjs.org/4.0.9/data/cores/mednafen_psx_hw-wasm.data',
 ];
 
 self.addEventListener('install', event => {
