@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v1';
+const APP_CACHE = 'nsk-warrior-cache-v2';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -42,6 +42,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+    self.skipWaiting();
     event.waitUntil(
         caches.open(APP_CACHE)
             .then(cache => {
