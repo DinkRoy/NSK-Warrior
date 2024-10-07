@@ -107,7 +107,7 @@ body {
 
 #book {
   position: relative;
-  width: 396px;
+  width: 400px;
   height: 318px;
   z-index: 2;
   left: -2000px;
@@ -152,8 +152,8 @@ body {
 }
 
 #page img {
-  width: 101%;
-  height: 101%;
+  width: 100.5%;
+  height: 100.5%;
   object-fit: cover;
 }
 
