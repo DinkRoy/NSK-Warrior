@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v3';
+const APP_CACHE = 'nsk-warrior-cache-v4';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -7,7 +7,7 @@ const urlsToCache = [
     '/RPG Maker (USA).state',
     '/scph5501.bin',
     '/images/manual_icon_sm.png',
-    '/images/title.gif',
+    '/images/title.webp',
     '/sound/page-turn.mp3',
     '/sound/slide-in.mp3',
     '/sound/slide-out.mp3',
