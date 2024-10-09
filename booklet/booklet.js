@@ -4,14 +4,14 @@ for (let i = 1; i <= 20; i++) {
         // Odd pages (right)
         $('#book').append(`
             <div id="page" class="right">
-                <img src="/booklet/pages/${i}.jpg" alt="Page ${i}">
+                <img src="/booklet/pages/${i}.webp" alt="Page ${i}">
             </div>
         `);
     } else {
         // Even pages (left)               
         $('#book').append(`
             <div id="page" class="left">
-                <img src="/booklet/pages/${i}.jpg" alt="Page ${i}">
+                <img src="/booklet/pages/${i}.webp" alt="Page ${i}">
             </div>
         `);
     }

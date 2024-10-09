@@ -1,17 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>NSK Warrior</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#800000">
+    <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
+    <title>NSK Warrior</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/images/192x192.png">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+                   .then(registration => {
+                       console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                   })
+                   .catch(error => {
+                       console.log('ServiceWorker registration failed: ', error);
+                   });
+            });
+        }
+    </script>
+
+
+
 </head>
 <body> 
     <div class="container" id="container">         
         <input type="checkbox" id="toggleButton" class="toggle-button">
         <label for="toggleButton">
-            <img src="images/manual_icon_sm.png" alt="Game Booklet">
+            <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
         </label>        
             <div id="book">
                 <!-- Pages added here from script --> 
@@ -28,7 +48,7 @@
         EJS_core = "mednafen_psx_hw";
         EJS_gameName = "NSK WARRIOR v1.1";
         EJS_color = "#800000";
-        EJS_backgroundImage = "https://nsk-warrior.netlify.app/images/title.gif";
+        EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/title.webp";
         EJS_backgroundColor = "#000000";
         EJS_startOnLoaded = false;
         EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
@@ -87,6 +107,7 @@
             }
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/booklet/turn.min.js"></script>   
     <script src="/booklet/panzoom.min.js"></script>  
     <script src="/booklet/booklet.js"></script>
