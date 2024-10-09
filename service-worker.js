@@ -93,16 +93,14 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('beforeunload', () => {
-    const gameState = {
-        window.EJS_emulator.gameManager.getState()
-    };
+    const gameState = window.EJS_emulator.gameManager.getState();
     set('gameState', gameState);
 });
 
 self.addEventListener('load', () => {
     get('gameState').then(gameState => {
         if (gameState) {
-            window.EJS_emulator.gameManager.loadState()
+            window.EJS_emulator.gameManager.loadState(gameState);
         }
     });
 });
