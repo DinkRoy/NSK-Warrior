@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v4';
+const APP_CACHE = 'nsk-warrior-cache-v1';
 const urlsToCache = [
     '/',
     '/index.html',
