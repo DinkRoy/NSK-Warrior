@@ -1,5 +1,3 @@
-import { set, get } from 'idb-keyval';
-
 const APP_CACHE = 'nsk-warrior-cache-v4';
 const urlsToCache = [
     '/',
