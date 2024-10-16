@@ -107,26 +107,26 @@
         };
         // Define EJS_ready function
         EJS_ready = function(e) {
-        getGameState().then(gameState => {
-            if (gameState) {
+        //getGameState().then(gameState => {
+            //if (gameState) {
                 window.EJS_startButtonName = "Resume {Game}";
-                console.log("Game state found");
+                /*console.log("Game state found");
             } else {
                 console.log("No game state found, using loadStateURL");
             }
-        }).catch(error => console.error("Error retrieving game state: ", error));
+        }).catch(error => console.error("Error retrieving game state: ", error));*/
     };
     // Define EJS_onGameStart function
     EJS_onGameStart = function(e) {
-        getGameState().then(gameState => {
+        /*getGameState().then(gameState => {
             if (gameState) {
                 console.log("Loading game state from IndexedDB");
                 window.EJS_emulator.gameManager.loadState(gameState);
             } else {
-                console.log("Loading game state from loadStateURL");
+                console.log("Loading game state from loadStateURL");*/
                 window.EJS_emulator.downloadStartState();
-            }
-        }).catch(error => console.error("Error retrieving game state: ", error));
+            //}
+        //}).catch(error => console.error("Error retrieving game state: ", error));
 
         window.addEventListener('beforeunload', async () => {
             const state = await window.EJS_emulator.gameManager.getState();
