@@ -107,38 +107,38 @@
         };
         // Define EJS_ready function
         EJS_ready = function(e) {
-            get('gameState').then(gameState => {
-                if (gameState) {
-                    EJS_startButtonName = "Resume {Game}";
-                    console.log("Game state found");
-                } else {
-                    console.log("No game state found, using loadStateURL");
-                }
-            });
-        };
-        // Define EJS_onGameStart function
-        EJS_onGameStart = function(e) {
-            get('gameState').then(gameState => {
-                if (gameState) {
-                    console.log("Loading game state from IndexedDB");
-                    window.EJS_emulator.gameManager.loadState(gameState);
-                } else {
-                    console.log("Loading game state from loadStateURL");
-                    window.EJS_emulator.downloadStartState();
-                }
-            });
+        getGameState().then(gameState => {
+            if (gameState) {
+                window.EJS_startButtonName = "Resume {Game}";
+                console.log("Game state found");
+            } else {
+                console.log("No game state found, using loadStateURL");
+            }
+        }).catch(error => console.error("Error retrieving game state: ", error));
+    };
+    // Define EJS_onGameStart function
+    EJS_onGameStart = function(e) {
+        getGameState().then(gameState => {
+            if (gameState) {
+                console.log("Loading game state from IndexedDB");
+                window.EJS_emulator.gameManager.loadState(gameState);
+            } else {
+                console.log("Loading game state from loadStateURL");
+                window.EJS_emulator.downloadStartState();
+            }
+        }).catch(error => console.error("Error retrieving game state: ", error));
 
-            window.addEventListener('beforeunload', async () => {
-                const state = await window.EJS_emulator.gameManager.getState();
-                const called = window.EJS_emulator.callEvent("save", {
-                    screenshot: window.EJS_emulator.gameManager.screenshot(),
-                    state: state
-                });
-                if (called > 0) return;
-                console.log("Saving game state");
-                await set('gameState', state);
+        window.addEventListener('beforeunload', async () => {
+            const state = await window.EJS_emulator.gameManager.getState();
+            const called = window.EJS_emulator.callEvent("save", {
+                screenshot: window.EJS_emulator.gameManager.screenshot(),
+                state: state
             });
-        };
+            if (called > 0) return;
+            console.log("Saving game state");
+            saveGameState(state).catch(error => console.error("Error saving game state: ", error));
+        });
+    };
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
