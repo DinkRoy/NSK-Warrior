@@ -116,7 +116,7 @@
         };
         
         EJS_onGameStart =  async function(e) { 
-            // Check if game was active before unload
+            /* Check if game was active before unload
             if (localStorage.getItem('gameActive') === 'true') {
                 const called = window.EJS_emulator.callEvent("load");
                 if (called > 0) return;
@@ -147,13 +147,13 @@
                         const a = window.EJS_emulator.createElement("a");
                         a.href = stateUrl;
                         a.download = window.EJS_emulator.getBaseFileName()+".state";
-                        a.click();
+                        a.click();*/
                     }
                     // Set game active
                     localStorage.setItem('gameActive', 'true');
-                });
-            });
-        };
+                /*});
+            });*/
+        }
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
