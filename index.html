@@ -105,40 +105,55 @@
         EJS_defaultOptions = {
             'save-state-location': 'browser'
         };
-        // Define EJS_ready function
+        
         EJS_ready = function(e) {
-        //getGameState().then(gameState => {
-            //if (gameState) {
-                window.EJS_startButtonName = "Resume {Game}";
-                /*console.log("Game state found");
+            // Check if game was active before unload
+            if (localStorage.getItem('gameActive') === 'true') {
+                document.querySelector('.ejs_start_button').innerText = "Resume";
             } else {
-                console.log("No game state found, using loadStateURL");
+                document.querySelector('.ejs_start_button').innerText = "Start";
             }
-        }).catch(error => console.error("Error retrieving game state: ", error));*/
-    };
-    // Define EJS_onGameStart function
-    EJS_onGameStart = function(e) {
-        /*getGameState().then(gameState => {
-            if (gameState) {
-                console.log("Loading game state from IndexedDB");
-                window.EJS_emulator.gameManager.loadState(gameState);
-            } else {
-                console.log("Loading game state from loadStateURL");*/
-                window.EJS_emulator.downloadStartState();
-            //}
-        //}).catch(error => console.error("Error retrieving game state: ", error));
-
-        window.addEventListener('beforeunload', async () => {
-            const state = await window.EJS_emulator.gameManager.getState();
-            const called = window.EJS_emulator.callEvent("save", {
-                screenshot: window.EJS_emulator.gameManager.screenshot(),
-                state: state
-            });
-            if (called > 0) return;
-            console.log("Saving game state");
-            saveGameState(state).catch(error => console.error("Error saving game state: ", error));
-        });
-    };
+        };
+        
+        EJS_onGameStart = function(e) {
+            // Check if game was active before unload
+            if (localStorage.getItem('gameActive') === 'true') {
+                const called = this.callEvent("load");
+                if (called > 0) return;
+                if (this.settings['save-state-location'] === "browser" && this.saveInBrowserSupported()) {
+                    this.storage.states.get(this.getBaseFileName()+".state").then(e => {
+                        this.gameManager.loadState(e);
+                        this.displayMessage(this.localization("SAVE LOADED FROM BROWSER"));
+                    })
+                } else {
+                    const file = await this.selectFile();
+                    const state = new Uint8Array(await file.arrayBuffer());
+                    this.gameManager.loadState(state);
+                }
+            };
+            document.addEventListener('DOMContentLoaded', (event) => {
+                window.addEventListener('beforeunload', async () => {
+                    const state = await window.gameManager.getState();
+                    const called = window.EJS_emulator.callEvent("save", {
+                        state: state
+                    });
+                    if (called > 0) return;
+                    if (this.settings['save-state-location'] === "browser" && this.saveInBrowserSupported()) {
+                        this.storage.states.put(this.getBaseFileName()+".state", state);
+                        this.displayMessage(this.localization("SAVE SAVED TO BROWSER"));
+                    } else {
+                        const blob = new Blob([state]);
+                        stateUrl = URL.createObjectURL(blob);
+                        const a = this.createElement("a");
+                        a.href = stateUrl;
+                        a.download = this.getBaseFileName()+".state";
+                        a.click();
+                    }
+                    // Set game active
+                    localStorage.setItem('gameActive', 'true');
+                });
+            };
+        };
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
