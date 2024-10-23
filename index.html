@@ -19,6 +19,12 @@
                    .catch(error => {
                        console.log('ServiceWorker registration failed: ', error);
                    });
+                if (navigator.serviceWorker.controller) {
+                   console.log('we have a service worker installed');
+                }
+                navigator.serviceWorker.oncontrollerchange = (e) => {
+                   console.log('New service worker activated');
+                };
             });
         }
     </script>
