@@ -113,58 +113,59 @@
         };
         
         EJS_ready = function(e) {
-            // Check if game was active before unload
-            if (localStorage.getItem('gameActive') === 'true') {
-                document.querySelector('.ejs_start_button').innerText = "Resume";
-            } else {
-                document.querySelector('.ejs_start_button').innerText = "Start";
-            }
-        };
-        
-        EJS_onGameStart =  async function(e) { 
-            // Check if game was active before unload
-            if (localStorage.getItem('gameActive') === 'true') {
-                const called = window.EJS_emulator.callEvent("load");
-                if (called > 0) return;
-                if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
-                    window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName()+".state").then(e => {
-                        window.EJS_emulator.gameManager.loadState(e);
-                        window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE LOADED FROM BROWSER"));
-                    })
-                } else {  
-                    const file = await window.EJS_emulator.selectFile();
-                    const state = new Uint8Array(await file.arrayBuffer());
-                    window.EJS_emulator.gameManager.loadState(state);
-                }
-            };
-            document.addEventListener('DOMContentLoaded', (event) => {
-                window.addEventListener('beforeunload', async () => {
-                    const state = await window.gameManager.getState();
-                    const called = window.EJS_emulator.callEvent("save", {
-                        state: state
-                    });
-                    if (called > 0) return;
-                    if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
-                        window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName()+".state", state);
-                        window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE SAVED TO BROWSER"));
-                    } else {
-                        const blob = new Blob([state]);
-                        stateUrl = URL.createObjectURL(blob);
-                        const a = window.EJS_emulator.createElement("a");
-                        a.href = stateUrl;
-                        a.download = window.EJS_emulator.getBaseFileName()+".state";
-                        a.click();
-                    }
-                    // Set game active
-                    localStorage.setItem('gameActive', 'true');
-                });
-            });
+      // Check if game was active before unload
+      if (localStorage.getItem('gameActive') === 'true') {
+        document.querySelector('.ejs_start_button').innerText = "Resume";
+      } else {
+        document.querySelector('.ejs_start_button').innerText = "Start";
+      }
+    };
+
+    EJS_onGameStart = async function(e) {
+      // Check if game was active before unload
+      if (localStorage.getItem('gameActive') === 'true') {
+        const called = window.EJS_emulator.callEvent("load");
+        if (called > 0) return;
+        if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
+          window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
+            window.EJS_emulator.gameManager.loadState(e);
+            window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE LOADED FROM BROWSER"));
+          })
+        } else {
+          const file = await window.EJS_emulator.selectFile();
+          const state = new Uint8Array(await file.arrayBuffer());
+          window.EJS_emulator.gameManager.loadState(state);
         }
+      } else {
+        window.EJS_emulator.downloadStartState();
+      };
+    }
     </script>
     <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/booklet/turn.min.js"></script>   
     <script src="/booklet/panzoom.min.js"></script>  
     <script src="/booklet/booklet.js"></script>
+    <script>
+    window.addEventListener('pagehide', async () => {
+      const state = await window.EJS_emulator.gameManager.getState();
+      const called = window.EJS_emulator.callEvent("save", { state: state });
+      if (called > 0) return;
+      if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
+        window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
+        window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE SAVED TO BROWSER"));
+      } else {
+        const blob = new Blob([state]);
+        stateUrl = URL.createObjectURL(blob);
+        const a = window.EJS_emulator.createElement("a");
+        a.href = stateUrl;
+        a.download = window.EJS_emulator.getBaseFileName() + ".state";
+        a.click();
+      }
+      // Set game active
+      localStorage.setItem('gameActive', 'true');
+      console.log("Game state saved to IndexedDB and localStorage");
+    });
+    </script>
 </body>
 </html>
