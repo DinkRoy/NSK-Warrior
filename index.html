@@ -147,24 +147,26 @@
     <script src="/booklet/panzoom.min.js"></script>  
     <script src="/booklet/booklet.js"></script>
     <script>
-      window.addEventListener('pagehide', () => {
-        const state = window.EJS_emulator.gameManager.getState();
-        const called = window.EJS_emulator.callEvent("save", { state: state });
-        if (called > 0) return;
-        if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
-          window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
-          window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE SAVED TO BROWSER"));
-        } else {
-          const blob = new Blob([state]);
-          stateUrl = URL.createObjectURL(blob);
-          const a = window.EJS_emulator.createElement("a");
-          a.href = stateUrl;
-          a.download = window.EJS_emulator.getBaseFileName() + ".state";
-          a.click();
-        }
-        // Set game active
-        localStorage.setItem('gameActive', 'true');
-        console.log("Game state saved to IndexedDB and localStorage");
+      window.addEventListener('visibilitychange', () => {
+          if (window.visibilityState === "hidden") {
+            const state = window.EJS_emulator.gameManager.getState();
+            const called = window.EJS_emulator.callEvent("save", { state: state });
+            if (called > 0) return;
+            if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
+              window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
+              window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE SAVED TO BROWSER"));
+            } else {
+              const blob = new Blob([state]);
+              stateUrl = URL.createObjectURL(blob);
+              const a = window.EJS_emulator.createElement("a");
+              a.href = stateUrl;
+              a.download = window.EJS_emulator.getBaseFileName() + ".state";
+              a.click();
+            }
+            // Set game active
+            localStorage.setItem('gameActive', 'true');
+            console.log("Game state saved to IndexedDB and localStorage");
+         };
       });
     </script>
 </body>
