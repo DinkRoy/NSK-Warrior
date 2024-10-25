@@ -147,8 +147,8 @@
     <script src="/booklet/panzoom.min.js"></script>  
     <script src="/booklet/booklet.js"></script>
     <script>
-      window.addEventListener('pagehide', async () => {
-        const state = await window.EJS_emulator.gameManager.getState();
+      window.addEventListener('pagehide', () => {
+        const state = window.EJS_emulator.gameManager.getState();
         const called = window.EJS_emulator.callEvent("save", { state: state });
         if (called > 0) return;
         if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
