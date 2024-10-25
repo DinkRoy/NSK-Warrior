@@ -53,12 +53,10 @@ self.addEventListener('install', event => {
 
 // Activate the service worker
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [APP_CACHE];
     event.waitUntil(
-        caches.keys().then(keyList => {
-            return Promise.all(keyList.map(key => {
-                if (!cacheWhitelist.includes(key)) {
-                    return caches.delete(key);
+        caches.keys().then((keys) => {
+          return Promise.all(
+          keys.filter((key) => key != APP_CACHE).map((key) => caches.delete(key))
                 }
             }));
         })
