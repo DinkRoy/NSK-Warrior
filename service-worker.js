@@ -57,11 +57,11 @@ self.addEventListener('activate', event => {
         caches.keys().then((keys) => {
           return Promise.all(
           keys.filter((key) => key != APP_CACHE).map((key) => caches.delete(key))
-                }
-            }));
+          )
         })
-    );
+    )
 });
+
 
 // Fetch event to handle caching and partial responses
 self.addEventListener('fetch', event => {
