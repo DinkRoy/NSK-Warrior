@@ -159,6 +159,7 @@
       };
     
       async function saveState() {
+        let stateUrl;
         const state = await window.EJS_emulator.gameManager.getState();
         const called = window.EJS_emulator.callEvent("saveState", { state: state });
         if (called > 0) return;
@@ -175,7 +176,6 @@
           a.click();
         }
         localStorage.setItem('gameActive', 'true');
-        console.log("Game state saved to IndexedDB");
       }
     </script>
 </body>
