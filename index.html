@@ -1,182 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#800000">
-    <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
-    <title>NSK Warrior</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/images/192x192.png">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-                   .then(registration => {
-                       console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                   })
-                   .catch(error => {
-                       console.log('ServiceWorker registration failed: ', error);
-                   });
-                if (navigator.serviceWorker.controller) {
-                   console.log('Service worker installed');
-                }
-                navigator.serviceWorker.oncontrollerchange = (e) => {
-                   console.log('New service worker activated');
-                };
-            });
-        }
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#800000">
+  <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
+  <title>NSK Warrior</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/images/192x192.png">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
 </head>
-<body> 
-    <div class="container" id="container">         
-        <input type="checkbox" id="toggleButton" class="toggle-button">
-        <label for="toggleButton">
-            <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
-        </label>        
-            <div id="book">
-                <!-- Pages added here from script --> 
-            </div> 
-        <div id="game"></div>          
+
+<body>
+  <div class="container" id="container">
+    <input type="checkbox" id="toggleButton" class="toggle-button">
+    <label for="toggleButton">
+      <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+    </label>
+    <div id="book">
+      <!-- Pages added here from script -->
     </div>
-    <audio id="flip" src="sound/page-turn.mp3"></audio>
-    <audio id="slide1" src="sound/slide_in.mp3"></audio>
-    <audio id="slide2" src="sound/slide_out.mp3"></audio>
-    <div id="blurBackground" class="blurred-background" style="display: none;"></div>
-    
-    <script>
-        EJS_player = "#game";
-        EJS_core = "mednafen_psx_hw";
-        EJS_gameName = "NSK WARRIOR v1.1";
-        EJS_color = "#800000";
-        EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/title.webp";
-        EJS_backgroundColor = "#000000";
-        EJS_startOnLoaded = false;
-        EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
-        EJS_loadStateURL = "RPG Maker (USA).state";
-        EJS_gameUrl = "RPG Maker (USA).zip";
-        EJS_biosUrl = "scph5501.bin";
-        EJS_VirtualGamepadSettings = [
-            {
-                type: "button",
-                text: "Y",
-                id: "y",
-                location: "right",
-                left: 40,
-                bold: true,
-                input_value: 9
+    <div id="game"></div>
+  </div>
+  <audio id="flip" src="sound/page-turn.mp3"></audio>
+  <audio id="slide1" src="sound/slide_in.mp3"></audio>
+  <audio id="slide2" src="sound/slide_out.mp3"></audio>
+  <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+
+  <script>
+    EJS_player = "#game";
+    EJS_core = "mednafen_psx_hw";
+    EJS_gameName = "NSK WARRIOR v1.1";
+    EJS_color = "#800000";
+    EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/title.webp";
+    EJS_backgroundColor = "#000000";
+    EJS_startOnLoaded = false;
+    EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
+    EJS_loadStateURL = "RPG Maker (USA).state";
+    EJS_gameUrl = "RPG Maker (USA).zip";
+    EJS_biosUrl = "scph5501.bin";
+    EJS_VirtualGamepadSettings = [
+      {
+        type: "button",
+        text: "Y",
+        id: "y",
+        location: "right",
+        left: 40,
+        bold: true,
+        input_value: 9
             },
-            {
-                type: "button",
-                text: "X",
-                id: "X",
-                location: "right",
-                top: 40,
-                bold: true,
-                input_value: 1
+      {
+        type: "button",
+        text: "X",
+        id: "X",
+        location: "right",
+        top: 40,
+        bold: true,
+        input_value: 1
             },
-            {
-                type: "button",
-                text: "B",
-                id: "b",
-                location: "right",
-                left: 81,
-                top: 40,
-                bold: true,
-                input_value: 8
+      {
+        type: "button",
+        text: "B",
+        id: "b",
+        location: "right",
+        left: 81,
+        top: 40,
+        bold: true,
+        input_value: 8
             },
-            {
-                type: "button",
-                text: "A",
-                id: "a",
-                location: "right",
-                left: 40,
-                top: 80,
-                bold: true,
-                input_value: 0
+      {
+        type: "button",
+        text: "A",
+        id: "a",
+        location: "right",
+        left: 40,
+        top: 80,
+        bold: true,
+        input_value: 0
             },
-            {
-                type: "dpad",
-                location: "left",
-                right: "50%",
-                joystickInput: false,
-                inputValues: [4, 5, 6, 7]
+      {
+        type: "dpad",
+        location: "left",
+        right: "50%",
+        joystickInput: false,
+        inputValues: [4, 5, 6, 7]
             }
         ];
-        EJS_Buttons = {
-            restart: false
-        }
-        EJS_DEBUG_XX = true;
-        EJS_defaultOptions = {
-            'save-state-location': 'browser'
-        };
-        
-      EJS_ready = function(e) {
-        // Check if game was active before unload
-        if (localStorage.getItem('gameActive') === 'true') {
-          document.querySelector('.ejs_start_button').innerText = "Resume";
-        } else {
-          document.querySelector('.ejs_start_button').innerText = "Start";
-        }
-      };
+    EJS_Buttons = {
+      restart: false
+    };
+    EJS_defaultOptions = {
+      'save-state-location': 'browser'
+    };
 
-      EJS_onGameStart = async function(e) {
-        // Check if game was active before unload
-        if (localStorage.getItem('gameActive') === 'true') {
-          const called = window.EJS_emulator.callEvent("load");
-          if (called > 0) return;
-          if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
-            window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
-              window.EJS_emulator.gameManager.loadState(e);
-              window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE LOADED FROM BROWSER"));
-            })
-          } else {
-            const file = await window.EJS_emulator.selectFile();
-            const state = new Uint8Array(await file.arrayBuffer());
-            window.EJS_emulator.gameManager.loadState(state);
-          }
-        } else {
-          window.EJS_emulator.downloadStartState();
-        };
+    EJS_ready = function(e) {
+      // Check if game was active before unload
+      if (localStorage.getItem('gameActive') === 'true') {
+        document.querySelector('.ejs_start_button').innerText = "Resume";
+      } else {
+        document.querySelector('.ejs_start_button').innerText = "Start";
       }
-    </script>
-    <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/booklet/turn.min.js"></script>   
-    <script src="/booklet/panzoom.min.js"></script>  
-    <script src="/booklet/booklet.js"></script>
-    <script>
-      document.addEventListener('visibilitychange', async () => {
-        if (document.visibilityState === 'hidden') {
-          await saveState();
+    };
+
+    EJS_onGameStart = async function(e) {
+      // Check if game was active before unload
+      if (localStorage.getItem('gameActive') === 'true') {
+        if (window.EJS_emulator.saveInBrowserSupported()) {
+          window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
+            window.EJS_emulator.gameManager.loadState(e);
+          })
         }
-      });
-    
-      window.onbeforeunload = async (event) => {
-        await saveState();
-        event.returnValue = '';
+      } else {
+        window.EJS_emulator.downloadStartState();
       };
+      localStorage.setItem('gameActive', 'true');
+      localStorage.setItem('gameSaved', 'false');
+    }
+  </script>
     
-      async function saveState() {
-        let stateUrl;
-        const state = await window.EJS_emulator.gameManager.getState();
-        const called = window.EJS_emulator.callEvent("saveState", { state: state });
-        if (called > 0) return;
-        if (window.EJS_emulator.settings['save-state-location'] === "browser" && window.EJS_emulator.saveInBrowserSupported()) {
-          await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
-          window.EJS_emulator.displayMessage(window.EJS_emulator.localization("SAVE SAVED TO BROWSER"));
-          console.log('Save State saved to browser');
-        } else {
-          const blob = new Blob([state]);
-          const stateUrl = URL.createObjectURL(blob);
-          const a = window.EJS_emulator.createElement("a");
-          a.href = stateUrl;
-          a.download = window.EJS_emulator.getBaseFileName() + ".state";
-          a.click();
-        }
-        localStorage.setItem('gameActive', 'true');
+  <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>
+  
+  <script>
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'hidden') {
+        await saveState();
       }
-    </script>
+    });
+
+    window.onbeforeunload = (event) => {
+      event.returnValue = '';
+    };
+
+    async function saveState() {
+      const state = await window.EJS_emulator.gameManager.getState();
+      const called = window.EJS_emulator.callEvent("saveState", { state: state });
+      if (called > 0) return;
+      if (window.EJS_emulator.saveInBrowserSupported()) {
+        await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
+        console.log('Game state saved to browser');
+      }
+    }
+    setInterval(() => {
+      saveState();
+      localStorage.setItem('gameSaved', 'true')
+    }, 60000);
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="/booklet/turn.min.js"></script>
+  <script src="/booklet/panzoom.min.js"></script>
+  <script src="/booklet/booklet.js"></script>
 </body>
 </html>
