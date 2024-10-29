@@ -1,4 +1,5 @@
 const APP_CACHE = 'nsk-warrior-cache-v6';
+
 const urlsToCache = [
     '/',
     '/index.html',
@@ -34,7 +35,7 @@ const urlsToCache = [
     '/booket/booklet.js',
     '/booklet/panzoom.min.js',
     '/booklet/turn.min.js',
-    'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js', 
+    'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js',
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.js',
     'https://cdn.emulatorjs.org/4.0.9/data/loader.js',
     'https://cdn.emulatorjs.org/4.0.9/data/emulator.min.css',
@@ -51,19 +52,18 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activate the service worker
 self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then((keys) => {
-          return Promise.all(
-          keys.filter((key) => key != APP_CACHE).map((key) => caches.delete(key))
-          )
+        caches.keys().then(keys => {
+            return Promise.all(
+                keys.filter(key => key !== APP_CACHE)
+                    .map(key => caches.delete(key))
+            );
         })
-    )
+    );
+    self.clients.claim(); 
 });
 
-
-// Fetch event to handle caching and partial responses
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
