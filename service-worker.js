@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v7';
+const APP_CACHE = 'nsk-warrior-cache-v8';
 
 const urlsToCache = [
     '/',
@@ -45,10 +45,20 @@ const urlsToCache = [
 self.addEventListener('install', event => {
     self.skipWaiting();
     event.waitUntil(
-        caches.open(APP_CACHE)
-            .then(cache => {
-                return cache.addAll(urlsToCache);
-            })
+        caches.open(APP_CACHE).then(cache => {
+            return Promise.all(
+                urlsToCache.map(url => {
+                    return fetch(url).then(response => {
+                        if (!response.ok) {
+                            throw new TypeError('Bad response status');
+                        }
+                        return cache.put(url, response);
+                    }).catch(error => {
+                        console.error('Failed to cache:', url, error);
+                    });
+                })
+            );
+        })
     );
 });
 
@@ -61,29 +71,27 @@ self.addEventListener('activate', event => {
             );
         })
     );
-    self.clients.claim(); 
+    self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request).then(networkResponse => {
-                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-                        return networkResponse;
-                    }
-                    const responseToCache = networkResponse.clone();
-                    caches.open(APP_CACHE)
-                        .then(cache => {
-                            cache.put(event.request, responseToCache);
-                        });
+        caches.match(event.request).then(response => {
+            if (response) {
+                return response;
+            }
+            return fetch(event.request).then(networkResponse => {
+                if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
                     return networkResponse;
-                }).catch(() => {
-                    return caches.match(event.request);
+                }
+                const responseToCache = networkResponse.clone();
+                caches.open(APP_CACHE).then(cache => {
+                    cache.put(event.request, responseToCache);
                 });
-            })
+                return networkResponse;
+            }).catch(() => {
+                return caches.match(event.request);
+            });
+        })
     );
 });
