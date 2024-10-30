@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v8';
+const APP_CACHE = 'nsk-warrior-cache-v9';
 
 const urlsToCache = [
     '/',
@@ -69,9 +69,10 @@ self.addEventListener('activate', event => {
                 keys.filter(key => key !== APP_CACHE)
                     .map(key => caches.delete(key))
             );
+        }).then(() => {
+            return self.clients.claim();
         })
     );
-    self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
