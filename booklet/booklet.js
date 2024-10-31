@@ -102,8 +102,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const boundedY = Math.min(Math.max(y, minY), maxY);
             book.style.transform = `translate(${boundedX}px, ${boundedY}px) scale(${scale})`;
         }
-    });
-            
+    });            
     // Enable mouse wheel zoom
     book.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
             
@@ -117,22 +116,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
             blurBackground.style.display = 'none';
         }
     });
-                
-    // Detect browser back button event and trigger togglebutton
-    window.addEventListener('popstate', async () => {
-        if (toggleButton.checked) {                  
-            toggleButton.checked = false;
-            document.getElementById("slide2").play();
-            blurBackground.style.display = 'none';
-            window.history.pushState({}, '');
-        } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
-            await saveState();
-            window.close();
-        } else {
-            window.history.back();
-        }
-    });
-        
-    // Push initial state to history to detect back button
-    window.history.pushState({}, '');            
 });
+
+// Detect browser back button event and trigger togglebutton
+window.addEventListener('popstate', async () => {
+  if (toggleButton.checked) {
+    toggleButton.checked = false;
+    document.getElementById("slide2").play();
+    blurBackground.style.display = 'none';
+    window.history.pushState({}, '');
+  } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
+    console.log('Fullscreen mode detected, saving state and closing');
+    await saveState();
+    window.close();
+  } else {
+    console.log('Saving state before navigating back');
+    await saveState();
+    window.history.back();
+  }
+});
+
+// Push initial state to history to detect back button
+window.history.pushState({}, '');
