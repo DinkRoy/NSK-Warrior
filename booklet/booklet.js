@@ -119,13 +119,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
                 
     // Detect browser back button event and trigger togglebutton
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', async () => {
         if (toggleButton.checked) {                  
             toggleButton.checked = false;
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
             window.history.pushState({}, '');
         } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
+            await saveState();
             window.close();
         } else {
             window.history.back();
