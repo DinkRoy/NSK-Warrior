@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
             window.history.pushState({}, '');
+        } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
+            window.close();
         } else {
             window.history.back();
         }
