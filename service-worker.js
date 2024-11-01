@@ -82,7 +82,7 @@ self.addEventListener('fetch', event => {
                 return response;
             }
             return fetch(event.request).then(networkResponse => {
-                if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+                if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic' || event.request.method !== 'GET') {
                     return networkResponse;
                 }
                 const responseToCache = networkResponse.clone();
