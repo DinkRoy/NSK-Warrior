@@ -125,6 +125,7 @@
 
     EJS_onGameStart = async function(e) {
       document.addEventListener('DOMContentLoaded', () => {
+        localStorage.setItem('gameActive', 'true');
         if (localStorage.getItem('gameActive') === 'true') {
           if (window.EJS_emulator.saveInBrowserSupported()) {
             window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
@@ -134,7 +135,6 @@
         } else {
           window.EJS_emulator.downloadStartState();
         };
-        localStorage.setItem('gameActive', 'true');
       });
     }
   </script>
