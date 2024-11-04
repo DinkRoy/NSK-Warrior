@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#800000">
@@ -28,90 +29,143 @@
             });
         }
     </script>
+
 </head>
-<body> 
-    <div class="container" id="container">         
-        <input type="checkbox" id="toggleButton" class="toggle-button">
-        <label for="toggleButton">
-            <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
-        </label>        
-            <div id="book">
-                <!-- Pages added here from script --> 
-            </div> 
-        <div id="game"></div>          
+
+<body>
+  <div class="container" id="container">
+    <input type="checkbox" id="toggleButton" class="toggle-button">
+    <label for="toggleButton">
+      <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+    </label>
+    <div id="book">
+      <!-- Pages added here from script -->
     </div>
-    <audio id="flip" src="sound/page-turn.mp3"></audio>
-    <audio id="slide1" src="sound/slide_in.mp3"></audio>
-    <audio id="slide2" src="sound/slide_out.mp3"></audio>
-    <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+    <div id="game"></div>
+  </div>
+  <audio id="flip" src="sound/page-turn.mp3"></audio>
+  <audio id="slide1" src="sound/slide_in.mp3"></audio>
+  <audio id="slide2" src="sound/slide_out.mp3"></audio>
+  <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+
+  <script>
+    EJS_player = "#game";
+    EJS_core = "mednafen_psx_hw";
+    EJS_gameName = "NSK WARRIOR v1.1";
+    EJS_color = "#800000";
+    EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/title.webp";
+    EJS_backgroundColor = "#000000";
+    EJS_startOnLoaded = false;
+    EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
+    EJS_loadStateURL = "RPG Maker (USA).state";
+    EJS_gameUrl = "RPG Maker (USA).zip";
+    EJS_biosUrl = "scph5501.bin";
+    EJS_VirtualGamepadSettings = [
+      {
+        type: "button",
+        text: "Y",
+        id: "y",
+        location: "right",
+        left: 40,
+        bold: true,
+        input_value: 9
+            },
+      {
+        type: "button",
+        text: "X",
+        id: "X",
+        location: "right",
+        top: 40,
+        bold: true,
+        input_value: 1
+            },
+      {
+        type: "button",
+        text: "B",
+        id: "b",
+        location: "right",
+        left: 81,
+        top: 40,
+        bold: true,
+        input_value: 8
+            },
+      {
+        type: "button",
+        text: "A",
+        id: "a",
+        location: "right",
+        left: 40,
+        top: 80,
+        bold: true,
+        input_value: 0
+            },
+      {
+        type: "dpad",
+        location: "left",
+        right: "50%",
+        joystickInput: false,
+        inputValues: [4, 5, 6, 7]
+            }
+        ];
+    EJS_Buttons = {
+      restart: false
+    };
+    EJS_defaultOptions = {
+      'save-state-location': 'browser'
+    };
+
+    EJS_ready = function(e) {
+      // Check if game was active before unload
+      if (localStorage.getItem('gameActive') === 'true') {
+        document.querySelector('.ejs_start_button').innerText = "Resume";
+      } else {
+        document.querySelector('.ejs_start_button').innerText = "Start";
+      }
+    };
+
+    EJS_onGameStart = async function(e) {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('gameActive') === 'true') {
+          if (window.EJS_emulator.saveInBrowserSupported()) {
+            window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
+              window.EJS_emulator.gameManager.loadState(e);
+            })
+          }
+        } else {
+          window.EJS_emulator.downloadStartState();
+        };
+        localStorage.setItem('gameActive', 'true');
+      });
+    }
+  </script>
     
-    <script>
-        EJS_player = "#game";
-        EJS_core = "mednafen_psx_hw";
-        EJS_gameName = "NSK WARRIOR v1.1";
-        EJS_color = "#800000";
-        EJS_backgroundImage = "https://nsk-warrior-beta.netlify.app/images/title.webp";
-        EJS_backgroundColor = "#000000";
-        EJS_startOnLoaded = false;
-        EJS_pathtodata = "https://cdn.emulatorjs.org/4.0.9/data/";
-        EJS_loadStateURL = "RPG Maker (USA).state";
-        EJS_gameUrl = "RPG Maker (USA).zip";
-        EJS_biosUrl = "scph5501.bin";
-        EJS_VirtualGamepadSettings = [
-            {
-                type: "button",
-                text: "Y",
-                id: "y",
-                location: "right",
-                left: 40,
-                bold: true,
-                input_value: 9
-            },
-            {
-                type: "button",
-                text: "X",
-                id: "X",
-                location: "right",
-                top: 40,
-                bold: true,
-                input_value: 1
-            },
-            {
-                type: "button",
-                text: "B",
-                id: "b",
-                location: "right",
-                left: 81,
-                top: 40,
-                bold: true,
-                input_value: 8
-            },
-            {
-                type: "button",
-                text: "A",
-                id: "a",
-                location: "right",
-                left: 40,
-                top: 80,
-                bold: true,
-                input_value: 0
-            },
-            {
-                type: "dpad",
-                location: "left",
-                right: "50%",
-                joystickInput: false,
-                inputValues: [4, 5, 6, 7]
-            }
-        ]
-        EJS_Buttons = {
-                restart: false
-            }
-    </script>
-    <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>  
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/booklet/turn.min.js"></script>   
-    <script src="/booklet/panzoom.min.js"></script>  
-    <script src="/booklet/booklet.js"></script>
+  <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>
+  
+  <script>
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'hidden') {
+        await saveState();
+      } 
+    });
+
+    window.onbeforeunload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    async function saveState() {
+      const state = await window.EJS_emulator.gameManager.getState();
+      const called = window.EJS_emulator.callEvent("saveState", { state: state });
+      if (called > 0) return;
+      if (window.EJS_emulator.saveInBrowserSupported()) {
+        await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
+        console.log('Game state saved to browser');
+      }
+    }
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="/booklet/turn.min.js"></script>
+  <script src="/booklet/panzoom.min.js"></script>
+  <script src="/booklet/booklet.js"></script>
 </body>
 </html>

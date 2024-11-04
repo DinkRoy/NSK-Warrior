@@ -43,5 +43,12 @@
             "sizes": "48x48",
             "type": "image/png"
         }
+    ],
+    "screenshots": [
+        {
+            "src": "images/title_screen.png",
+            "sizes": "800x800",
+            "label": "A screenshot of the game title"
+        } 
     ]
 }
