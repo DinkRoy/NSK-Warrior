@@ -125,7 +125,7 @@
         if (localStorage.getItem('gameActive') === 'true') {
           if (window.EJS_emulator.saveInBrowserSupported()) {
             window.EJS_emulator.storage.states.get(window.EJS_emulator.getBaseFileName() + ".state").then(e => {
-              window.EJS_emulator.gameManager.loadState(new Uint8Array(data.state));
+              window.EJS_emulator.gameManager.loadState(e);
             })
           }
         } else {
