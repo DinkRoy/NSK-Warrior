@@ -129,8 +129,8 @@
               window.EJS_emulator.gameManager.loadState(e);
             })
       } else {
-        window.EJS_emulator.downloadStartState();
         localStorage.setItem('gameActive', 'true');
+        return
       };
     }
   </script>
