@@ -126,8 +126,11 @@
               window.EJS_emulator.gameManager.loadState(e);
             })
       } else {
-        window.EJS_emulator.downloadStartState();
+
         localStorage.setItem('gameActive', 'true');
+        return
+
+
       };
     }
   </script>
@@ -154,7 +157,7 @@
         await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
         console.log('Game state saved to browser');
       }
-    }
+    } 
   </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="/booklet/turn.min.js"></script>
