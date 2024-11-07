@@ -112,7 +112,6 @@
     };
 
     EJS_ready = function(e) {
-      // Check if game was active before unload
       if (localStorage.getItem('gameActive') === 'true') {
         document.querySelector('.ejs_start_button').innerText = "Resume";
       } else {
