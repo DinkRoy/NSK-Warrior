@@ -47,7 +47,15 @@
     "screenshots": [
         {
             "src": "images/title_screen.png",
-            "sizes": "800x800",
+            "sizes": "1080x886",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "A screenshot of the game title"
+        },
+        {
+            "src": "images/title_screen.png",
+            "sizes": "1080x886",
+            "type": "image/png",
             "label": "A screenshot of the game title"
         } 
     ]
