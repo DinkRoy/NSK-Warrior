@@ -1,11 +1,11 @@
-const APP_CACHE = 'nsk-warrior-cache-v3';
+const APP_CACHE = 'nsk-warrior-cache-v01';
 const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
-    '/RPG Maker (USA).zip',
-    '/RPG Maker (USA).state',
-    '/scph5501.bin',
+    'https://nsk-warrior-files.netlify.app/RPG Maker (USA).zip',
+    'https://nsk-warrior-files.netlify.app/RPG Maker (USA).state',
+    'https://nsk-warrior-files.netlify.app/scph5501.bin',
     '/images/manual_icon.webp',
     '/images/title.webp',
     '/sound/page-turn.mp3',
