@@ -1,6 +1,7 @@
 {
     "name": "NSK Warrior",
     "short_name": "NSK Warrior",
+    "description": "Fight the war on dirt as an aspiring janitor in a grimy factory in this humorous, survival horror RPG game.",
     "start_url": "/index.html",
     "display": "fullscreen",
     "background_color": "#000000",
