@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.netlify.nsk_warrior.twa",
+        "sha256_cert_fingerprints": ["FD:56:D4:DB:06:51:6D:D5:4D:41:F4:E0:E0:66:B4:A3:CD:2F:82:35:EC:D2:9B:D2:99:64:2A:29:AD:76:1A:E1"]
+      }
+    }]
