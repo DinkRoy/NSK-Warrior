@@ -59,10 +59,28 @@
             "label": "A screenshot of the game title"
         },
         {
-            "src": "images/title_screen.png",
-            "sizes": "1080x886",
+            "src": "images/sick_screen.png",
+            "sizes": "1317x1080",
             "type": "image/png",
-            "label": "A screenshot of the game title"
-        } 
+            "label": "Stay here where it is safe"
+        },
+        {
+            "src": "images/jim_screen.png",
+            "sizes": "1317x1080",
+            "type": "image/png",
+            "label": "How can I become an NSK Warrior?"
+        },
+        {
+            "src": "images/huh_screen.png",
+            "sizes": "1317x1080",
+            "type": "image/png",
+            "label": "Huh?"
+        },
+        {
+            "src": "images/scroll_screen.avif",
+            "sizes": "1348x1080",
+            "type": "image/avif",
+            "label": "Walking through the levels"
+        }
     ]
 }
