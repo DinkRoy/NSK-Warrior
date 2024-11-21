@@ -9,10 +9,42 @@
     <meta name="theme-color" content="#800000">
     <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
     <title>NSK Warrior</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="booklet/booklet.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/images/192x192.png">
+    <style>
+        body,
+        html {
+          height: 100%;
+          background-color: black;
+          color: white;
+        }
+
+        body {
+          margin: 0;
+          overflow: hidden;
+          padding: 0;
+        }
+
+        .container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+
+        #game {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          z-index: 1;
+          touch-action: none;
+        }
+    </style>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
