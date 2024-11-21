@@ -23,10 +23,10 @@ To play the game, simply open your web browser and navigate to [nsk-warrior.netl
 The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-warrior).
 
 ## Features
-- **Playable in Browser:** Enjoy the game directly in your web browser.
-- **PWA Support:** Install as a Progressive Web App for a native app-like experience.
-- **Original Game Booklet** While playing, flip through maps and game details in the original booklet that accompanied the game.
-- **Autosave & Resume:** Your progress is automatically saved when navigating back or when the app window is hidden. Play resumes automatically on reload.
+- **Playable in Browser:**  Enjoy the game directly in your web browser.
+- **PWA Support:**  Install as a Progressive Web App for a native app-like experience.
+- **Original Game Booklet:**  While playing, flip through maps and game details in the original booklet that accompanied the game.
+- **Autosave & Resume:**  Your progress is automatically saved when navigating back or when the app window is hidden. Play resumes automatically on reload.
 
 ## Booklet
 To add a game booklet to your project:
