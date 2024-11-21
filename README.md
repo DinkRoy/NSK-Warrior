@@ -24,9 +24,28 @@ The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-war
 
 **Booklet**
 - Copy the booklet folder to your project.
-- Add a links fot the stylesheet and booklet.js file in your html.
-- Insert this in the container div in your html:
-
+- Add a links for the stylesheet and booklet.js file in your html head section.
+  ```html
+  <link rel="stylesheet" href="booklet/booklet.css">
+  ```
+- Insert this in your html:
+  ```html
+  <div class="container" id="container"> <!-- Add container styles to your css -->
+    <input type="checkbox" id="toggleButton" class="toggle-button">
+    <label for="toggleButton">
+      <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+    </label>
+    <div id="book">
+      <!-- Pages added here from script -->
+    </div>
+    <div id="game"></div> <!-- Or whatever the div that displays your game is called -->
+  </div>
+  <audio id="flip" src="sound/page_turn.mp3"></audio>
+  <audio id="slide1" src="sound/slide_in.mp3"></audio>
+  <audio id="slide2" src="sound/slide_out.mp3"></audio>
+  <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+  ```
+ 
 ## Features
 - **Playable in Browser:** Enjoy the game directly in your web browser.
 - **PWA Support:** Install as a Progressive Web App for a native app-like experience.
