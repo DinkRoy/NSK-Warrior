@@ -21,10 +21,8 @@ Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original g
 ## Introduction
 **NSK Warrior** is a comical, survival-horror game built using RPG Maker for the PlayStation (PSX). This project brings the experience to the web, thanks to [**EmulatorJS**](https://github.com/EmulatorJS/).
 
-
-
 ## Usage
-To play the game, simply open your web browser and navigate to [nsk-warrior.netlify.app](#https://nsk-warrior.netlify.app). Install the PWA to your home screen for a more integrated experience.
+To play the game, simply open your web browser and navigate to [nsk-warrior.netlify.app](https://nsk-warrior.netlify.app). Install the PWA to your home screen for a more integrated experience.
 
 The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-warrior).
 
