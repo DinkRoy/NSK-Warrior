@@ -22,11 +22,25 @@ To play the game, simply open your web browser and navigate to [nsk-warrior.netl
 
 The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-warrior).
 
-**Booklet**
+## Booklet
+To add a game booklet to your project:
 - Copy the booklet folder to your project.
-- Add a links for the stylesheet and booklet.js file in your html head section.
+- Replace pages with your images.
+- Add a links for the stylesheet and js files in your html.
   ```html
-  <link rel="stylesheet" href="booklet/booklet.css">
+  <head>
+  ...
+    <link rel="stylesheet" href="booklet/booklet.css">
+  ...
+  </head>
+  ...
+  <body>
+  ...
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/booklet/turn.min.js"></script>
+    <script src="/booklet/panzoom.min.js"></script>
+    <script src="/booklet/booklet.js"></script>
+  </body>
   ```
 - Insert this in your html:
   ```html
