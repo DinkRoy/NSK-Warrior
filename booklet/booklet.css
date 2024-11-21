@@ -1,26 +1,3 @@
-body,
-html {
-  height: 100%;
-  background-color: black;
-  color: white;
-}
-
-body {
-  margin: 0;
-  overflow: hidden;
-  padding: 0;
-}
-
-.container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
 .toggle-button {
   display: none;
 }
@@ -94,15 +71,6 @@ body {
 
 .hideButton {
   animation-name: hideButton;
-}
-
-#game {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  z-index: 1;
-  touch-action: none;
 }
 
 #book {
