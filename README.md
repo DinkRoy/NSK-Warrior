@@ -11,7 +11,7 @@ Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original g
 
 ## Introduction
 **NSK Warrior** is a comical, survival-horror game about an aspiring janitor working at a grimiy factory.  
-Originally developed using RPG Maker for the PlayStation (PSX), the game was difficult to share.  
+Since it was originally developed using RPG Maker for the PlayStation (PSX), the game was incredibly difficult to share.  
 Thanks to [**EmulatorJS**](https://github.com/EmulatorJS/), this project brings the experience to the web, making it accessible to all.
 
 ## Usage
