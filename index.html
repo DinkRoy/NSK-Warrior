@@ -44,6 +44,7 @@
     </div>
     <div id="game"></div>
   </div>
+  <audio id="theme" src="sound/theme.mp3"></audio>
   <audio id="flip" src="sound/page-turn.mp3"></audio>
   <audio id="slide1" src="sound/slide_in.mp3"></audio>
   <audio id="slide2" src="sound/slide_out.mp3"></audio>
@@ -121,6 +122,7 @@
       } else {
         document.querySelector('.ejs_start_button').innerText = "Start";
       }
+      document.getElementById("theme").play();
     };
 
     EJS_onGameStart = function(e) {
