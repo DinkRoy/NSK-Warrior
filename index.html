@@ -122,7 +122,6 @@
       } else {
         document.querySelector('.ejs_start_button').innerText = "Start";
       }
-      document.getElementById("theme").play();
     };
 
     EJS_onGameStart = function(e) {
@@ -134,6 +133,7 @@
         localStorage.setItem('gameActive', 'true');
         return
       };
+      document.getElementById("theme").play();
     }
   </script>
     
