@@ -22,6 +22,11 @@ To play the game, simply open your web browser and navigate to [nsk-warrior.netl
 
 The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-warrior).
 
+**Booklet**
+- Copy the booklet folder to your project.
+- Add a links fot the stylesheet and booklet.js file in your html.
+- Insert this in the container div in your html:
+
 ## Features
 - **Playable in Browser:** Enjoy the game directly in your web browser.
 - **PWA Support:** Install as a Progressive Web App for a native app-like experience.
