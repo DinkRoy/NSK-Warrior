@@ -14,29 +14,28 @@ if ('serviceWorker' in navigator) {
       console.log('New service worker activated');
     };
   });
-}
+};
 
 document.addEventListener('visibilitychange', async () => {
-      if (document.visibilityState === 'hidden') {
-        await saveState();
-      } 
-    });
+  if (document.visibilityState === 'hidden') {
+    await saveState();
+  } 
+});
 
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
+window.onbeforeunload = (e) => {
+  e.preventDefault();
+  e.returnValue = '';
+};
 
-    async function saveState() {
-      const state = await window.EJS_emulator.gameManager.getState();
-      const called = window.EJS_emulator.callEvent("saveState", { state: state });
-      if (called > 0) return;
-      if (window.EJS_emulator.saveInBrowserSupported()) {
-        await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
-        console.log('Game state saved to browser');
-      }
-    };
-}
+async function saveState() {
+  const state = await window.EJS_emulator.gameManager.getState();
+  const called = window.EJS_emulator.callEvent("saveState", { state: state });
+  if (called > 0) return;
+  if (window.EJS_emulator.saveInBrowserSupported()) {
+    await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
+    console.log('Game state saved to browser');
+  }
+};
 
 window.addEventListener('popstate', async () => {
     console.log('Saving state before navigating back');
