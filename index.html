@@ -150,29 +150,6 @@
   </script>
     
   <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>
-  
-  <script>
-    document.addEventListener('visibilitychange', async () => {
-      if (document.visibilityState === 'hidden') {
-        await saveState();
-      } 
-    });
-
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
-
-    async function saveState() {
-      const state = await window.EJS_emulator.gameManager.getState();
-      const called = window.EJS_emulator.callEvent("saveState", { state: state });
-      if (called > 0) return;
-      if (window.EJS_emulator.saveInBrowserSupported()) {
-        await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
-        console.log('Game state saved to browser');
-      }
-    } 
-  </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="/booklet/turn.min.js"></script>
   <script src="/booklet/panzoom.min.js"></script>
