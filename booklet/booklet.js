@@ -125,13 +125,7 @@ window.addEventListener('popstate', async () => {
     document.getElementById("slide2").play();
     blurBackground.style.display = 'none';
     window.history.pushState({}, '');
-  } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
-    console.log('Fullscreen mode detected, saving state and closing');
-    await saveState();
-    window.close();
   } else {
-    console.log('Saving state before navigating back');
-    await saveState();
     window.history.back();
   }
 });

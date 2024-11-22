@@ -9,43 +9,58 @@
     <meta name="theme-color" content="#800000">
     <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
     <title>NSK Warrior</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="booklet/booklet.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/images/192x192.png">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-                   .then(registration => {
-                       console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                   })
-                   .catch(error => {
-                       console.log('ServiceWorker registration failed: ', error);
-                   });
-                if (navigator.serviceWorker.controller) {
-                   console.log('Service worker installed');
-                }
-                navigator.serviceWorker.oncontrollerchange = (e) => {
-                   console.log('New service worker activated');
-                };
-            });
+    <style>
+        body,
+        html {
+          height: 100%;
+          background-color: black;
+          color: white;
         }
-    </script>
+
+        body {
+          margin: 0;
+          overflow: hidden;
+          padding: 0;
+        }
+
+        .container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+
+        #game {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          z-index: 1;
+          touch-action: none;
+        }
+    </style>
+    <script src="/app.js"></script>
 </head>
 <body>
   <div class="container" id="container">
     <input type="checkbox" id="toggleButton" class="toggle-button">
     <label for="toggleButton">
-      <img src="images/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+      <img src="booklet/manual_icon.webp" width="40" height="40" alt="Game Booklet">
     </label>
     <div id="book">
       <!-- Pages added here from script -->
     </div>
     <div id="game"></div>
   </div>
-  <audio id="flip" src="sound/page-turn.mp3"></audio>
-  <audio id="slide1" src="sound/slide_in.mp3"></audio>
-  <audio id="slide2" src="sound/slide_out.mp3"></audio>
+  <audio id="flip" src="booklet/sounds/page_turn.mp3"></audio>
+  <audio id="slide1" src="booklet/sounds/slide_in.mp3"></audio>
+  <audio id="slide2" src="booklet/sounds/slide_out.mp3"></audio>
   <div id="blurBackground" class="blurred-background" style="display: none;"></div>
 
   <script>
@@ -135,29 +150,6 @@
   </script>
     
   <script src="https://cdn.emulatorjs.org/4.0.9/data/loader.js"></script>
-  
-  <script>
-    document.addEventListener('visibilitychange', async () => {
-      if (document.visibilityState === 'hidden') {
-        await saveState();
-      } 
-    });
-
-    window.onbeforeunload = (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
-
-    async function saveState() {
-      const state = await window.EJS_emulator.gameManager.getState();
-      const called = window.EJS_emulator.callEvent("saveState", { state: state });
-      if (called > 0) return;
-      if (window.EJS_emulator.saveInBrowserSupported()) {
-        await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
-        console.log('Game state saved to browser');
-      }
-    } 
-  </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="/booklet/turn.min.js"></script>
   <script src="/booklet/panzoom.min.js"></script>
