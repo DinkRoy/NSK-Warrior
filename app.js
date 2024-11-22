@@ -7,12 +7,12 @@ if ('serviceWorker' in navigator) {
       .catch(error => {
         console.log('ServiceWorker registration failed: ', error);
       });
-      if (navigator.serviceWorker.controller) {
-        console.log('Service worker installed');
-      }
-        navigator.serviceWorker.oncontrollerchange = (e) => {
-          console.log('New service worker activated');
-        };
+    if (navigator.serviceWorker.controller) {
+      console.log('Service worker installed');
+    }
+    navigator.serviceWorker.oncontrollerchange = (e) => {
+      console.log('New service worker activated');
+    };
   });
 }
 
