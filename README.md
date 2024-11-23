@@ -1,4 +1,4 @@
-![title](images/title_banner.webp)
+![title](images/banner.png)
 ## Table of Contents
 - [Introduction](#introduction)
 - [Usage](#usage)
