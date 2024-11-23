@@ -1,5 +1,4 @@
 ![title](images/title_trans.png)
-
 ## Table of Contents
 - [Introduction](#introduction)
 - [Usage](#usage)
@@ -80,6 +79,8 @@ To add a game booklet to your project:
   <audio id="slide2" src="sound/slide_out.mp3"></audio>
   <div id="blurBackground" class="blurred-background" style="display: none;"></div>
   ```
+
+## License 
 
 ## Contact
 James Coburn - jamesrobertcoburn@gmail.com
