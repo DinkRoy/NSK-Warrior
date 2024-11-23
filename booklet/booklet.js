@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         autoCenter: true,
         when: {
             turning: function(e, page, view) {  
-                var audio = new Audio('/sound/page-turn.mp3');
+                var audio = new Audio('/booklet/sounds/page_turn.mp3');
                 audio.play();
             }
         }
