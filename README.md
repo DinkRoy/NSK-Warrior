@@ -1,4 +1,10 @@
 ![title](images/banner.png)
+
+Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original game created with RPG Maker (PSX).
+
+> [!NOTE]  
+> **No ROMs or bios files are included in this repo.**
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Usage](#usage)
@@ -13,13 +19,6 @@
 ![Tim is confused](images/huh_screen.png)
 
 ---
-
-# NSK Warrior
-
-Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original game created with RPG Maker (PSX).
-
-> [!NOTE]  
-> **No ROMs or bios files are included in this repo.**
 
 ## Introduction
 **NSK Warrior** is a comical, survival-horror game about an aspiring janitor working at a grimiy factory.  
