@@ -96,4 +96,4 @@ James Coburn - jamesrobertcoburn@gmail.com
 - [**Panzoom**](https://github.com/timmywil/panzoom)
 
 ---
-![montage: party walks through various locations](images/scroll_screen.avif)
+![montage: party walks through various locations](images/montage.avif)
