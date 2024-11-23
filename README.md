@@ -1,4 +1,12 @@
 ![title](images/title_trans.png)
+## Table of Contents
+- [Introduction](#introduction)
+- [Usage](#usage)
+- [Features](#features)
+- [Booklet](#booklet)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 ![Tim meets Jim](images/jim_screen.png)
 ![poisoned man gives advice](images/sick_screen.png)
 ![Tim is confused](images/huh_screen.png)
