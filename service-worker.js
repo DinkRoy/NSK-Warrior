@@ -1,14 +1,14 @@
-const APP_CACHE = 'nsk-warrior-cache-v02';
+const APP_CACHE = 'nsk-warrior-cache-v03';
 const urlsToCache = [
     '/',
     '/index.html',
-    '/styles.css',
+    '/booklet/booklet.css',
     'https://nsk-warrior-files.netlify.app/RPG Maker (USA).zip',
     'https://nsk-warrior-files.netlify.app/RPG Maker (USA).state',
     'https://nsk-warrior-files.netlify.app/scph5501.bin',
-    '/images/manual_icon.webp',
+    '/booklet/manual_icon.webp',
     '/images/title.avif',
-    '/sound/page-turn.mp3',
+    '/sound/page_turn.mp3',
     '/sound/slide_in.mp3',
     '/sound/slide_out.mp3',
     '/booklet/pages/1.webp',
