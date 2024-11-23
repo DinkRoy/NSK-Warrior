@@ -10,7 +10,7 @@
 Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original game created with RPG Maker (PSX).
 
 > [!NOTE]  
-> **The ROM and bios files neccessary for emulation are hosted on a private repo. They cannot be downloaded, only cached in the browser.**
+> **No ROMs or bios files are included in this repo.**
 
 ## Introduction
 **NSK Warrior** is a comical, survival-horror game about an aspiring janitor working at a grimiy factory.  
@@ -48,7 +48,7 @@ To add a game booklet to your project:
     <script src="/booklet/booklet.js"></script>
   </body>
   ```
-- Insert this in your html:
+- Insert something like this in your html:
   ```html
   <div class="container" id="container"> <!-- Add container styles to your css -->
     <input type="checkbox" id="toggleButton" class="toggle-button">
