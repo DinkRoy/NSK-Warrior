@@ -83,10 +83,9 @@ To add a game booklet to your project:
 
 ## License 
 
-EmulatorJS is licensed under the
-GNU General Public License v3.0 license.
-
-Turn.js is released under a non-commercial BSD license.
+This project is licensed under the
+[GNU General Public License v3.0 license](LICENSE), 
+with the exception of Turn.js, which is released under a [non-commercial BSD license](http://turnjs.com/license.txt).
 
 ## Contact
 James Coburn - jamesrobertcoburn@gmail.com
