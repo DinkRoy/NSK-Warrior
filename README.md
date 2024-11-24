@@ -21,7 +21,7 @@ Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original g
 ---
 
 ## Introduction
-**NSK Warrior** is a comical, survival-horror game about an aspiring janitor working at a grimiy factory.  
+**NSK Warrior** is a comical, survival-horror game about an aspiring janitor working at a grimy factory.  
 
 Since it was originally developed using RPG Maker for the PlayStation (PSX), the game was incredibly difficult to share. 
 
