@@ -38,7 +38,9 @@ The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-war
 - **PWA Support:**  Install as a Progressive Web App for a native app-like experience.
   
 - **Original Game Booklet:**  While playing, flip through maps and game details in the original booklet that accompanied the game.
-  
+
+![demo of booklet](images/booklet.avif)
+
 - **Autosave & Resume:**  Your progress is automatically saved when navigating back or when the app window is hidden. Play resumes automatically on reload.
 
 ## Booklet
