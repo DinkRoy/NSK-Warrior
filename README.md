@@ -99,3 +99,5 @@ James Coburn - jamesrobertcoburn@gmail.com
 
 ---
 ![montage: party walks through various locations](images/montage.avif)
+
+![booklet page 1](booklet/pages/1.webp)
