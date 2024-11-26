@@ -1,4 +1,6 @@
-<p align="center"> ![title](images/banner.png) </p>
+<p align="center">
+![title](images/banner.png)
+</p>
 
 Using [**EmulatorJS**](https://github.com/EmulatorJS/) to preserve an original game created with RPG Maker (PSX).
 
