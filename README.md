@@ -51,7 +51,7 @@ The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-war
 To add a game booklet to your project:
 - Copy the booklet folder to your project.
 - Replace pages with your images.
-- Add a links for the stylesheet and js files in your html.
+- Add links for the stylesheet and js files in your html.
   ```html
   <head>
   ...
