@@ -35,9 +35,9 @@ The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-war
 ## Features
 - **Playable in Browser:**  Enjoy the game directly in your web browser.
   
-- **PWA Support:**  Install as a Progressive Web App for a native app-like experience.
+- **PWA Support:**  Install as a Progressive Web App for a native app-like experience and offline play.
   
-- **Original Game Booklet:**  While playing, flip through maps and game details in the original booklet that accompanied the game.
+- **Original Game Booklet:**  While playing, flip through maps and game details of the original booklet that accompanied the game.
 
 ![demo of booklet](images/booklet.avif)
 
