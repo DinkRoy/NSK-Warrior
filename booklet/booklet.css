@@ -142,3 +142,10 @@
   height: 636px;
   }
 }
+
+@media (min-width: 1000px) {
+  #book {
+  width: 600px;
+  height: 477px;
+  }
+}
