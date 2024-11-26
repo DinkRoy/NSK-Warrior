@@ -45,6 +45,8 @@ The game is also available at [itch.io](https://imaginary-monkey.itch.io/nsk-war
 
 - **Autosave & Resume:**  Your progress is automatically saved when navigating back or when the app window is hidden. Play resumes automatically on reload.
 
+![demo of resume feature](images/resume.avif)
+
 ## Booklet
 To add a game booklet to your project:
 - Copy the booklet folder to your project.
