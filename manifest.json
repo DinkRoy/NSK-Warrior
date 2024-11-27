@@ -77,10 +77,10 @@
             "label": "Huh?"
         },
         {
-            "src": "images/scroll_screen.avif",
-            "sizes": "1348x1080",
-            "type": "image/avif",
-            "label": "Walking through the levels"
+            "src": "images/title_screen.png",
+            "sizes": "A screenshot of the game title",
+            "type": "image/png",
+            "label": "A screenshot of the game title"
         }
     ]
 }
