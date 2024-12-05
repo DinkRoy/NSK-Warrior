@@ -41,4 +41,26 @@ window.addEventListener('popstate', async () => {
     console.log('Saving state before navigating back');
     await saveState();
     window.history.back();
-})
+});
+
+function applyStyles() {
+    const dpadMain = document.querySelector('.ejs_dpad_main');
+    const virtualGamepadRight = document.querySelector('.ejs_virtualGamepad_right');
+
+    if (dpadMain) {
+        dpadMain.style.left = "30px";
+    }
+
+    if (virtualGamepadRight) {
+        virtualGamepadRight.style.right = "30px";
+    }
+}
+
+const observer = new MutationObserver((mutationsList, observer) => {
+    if (document.querySelector('.ejs_dpad_main') && document.querySelector('.ejs_virtualGamepad_right')) {
+        applyStyles();
+        observer.disconnect();
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
