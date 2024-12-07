@@ -43,24 +43,46 @@ window.addEventListener('popstate', async () => {
     window.history.back();
 });
 
-function applyStyles() {
-    const dpadMain = document.querySelector('.ejs_dpad_main');
+// Adjust position of virtual gamepad 
+document.addEventListener('DOMContentLoaded', (event) => {
+  function applyCustomStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+            .ejs_virtualGamepad_left {
+                position: absolute;
+                bottom: 50px;
+                width: 125px;
+                height: 125px;
+                left: 7%; /* Adjusted left position */
+            }
+            .ejs_virtualGamepad_right {
+                position: absolute;
+                bottom: 50px;
+                width: 130px;
+                height: 130px;
+                right: 7%; /* Adjusted right position */
+            }
+        `;
+    document.head.appendChild(style);
+  }
+
+  function applyStyles() {
+    const virtualGamepadLeft = document.querySelector('.ejs_virtualGamepad_left');
     const virtualGamepadRight = document.querySelector('.ejs_virtualGamepad_right');
 
-    if (dpadMain) {
-        dpadMain.style.left = "30px";
+    if (virtualGamepadLeft && virtualGamepadRight) {
+      applyCustomStyles();
     }
+  }
 
-    if (virtualGamepadRight) {
-        virtualGamepadRight.style.right = "30px";
+  const observer = new MutationObserver((mutationsList, observer) => {
+    if (document.querySelector('.ejs_virtualGamepad_left') && document.querySelector('.ejs_virtualGamepad_right')) {
+      applyStyles();
+      observer.disconnect();
     }
-}
+  });
 
-const observer = new MutationObserver((mutationsList, observer) => {
-    if (document.querySelector('.ejs_dpad_main') && document.querySelector('.ejs_virtualGamepad_right')) {
-        applyStyles();
-        observer.disconnect();
-    }
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  applyStyles();
 });
-
-observer.observe(document.body, { childList: true, subtree: true });
