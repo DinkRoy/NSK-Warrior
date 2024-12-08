@@ -78,7 +78,7 @@
         },
         {
             "src": "images/title_screen.png",
-            "sizes": "A screenshot of the game title",
+            "sizes": "1080x886",
             "type": "image/png",
             "label": "A screenshot of the game title"
         }
