@@ -1,3 +1,9 @@
 /*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=31536000
+
+https://cdn.emulatorjs.org/*
+  Cache-Control: public, max-age=31536000
+
+https://ajax.googleapis.com/*
+  Cache-Control: public, max-age=31536000
