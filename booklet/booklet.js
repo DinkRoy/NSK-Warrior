@@ -1,4 +1,3 @@
-// Add pages to game booklet
 for (let i = 1; i <= 20; i++) {
     if (i % 2 === 1) {
         // Odd pages (right)
@@ -132,3 +131,7 @@ window.addEventListener('popstate', async () => {
 
 // Push initial state to history to detect back button
 window.history.pushState({}, '');
+
+/* window.EJS_emulator.addEventListener(menuButton, "touchstart touchend mousedown mouseup click", (e) => {
+    
+})*/
