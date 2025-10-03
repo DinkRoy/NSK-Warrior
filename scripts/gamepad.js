@@ -6,7 +6,7 @@ const circleSVG = `
 `;
 
 const triangleSVG = `
-<svg viewBox="-3 3 52 52">
+<svg viewBox="-2 3 52 52">
   <polygon points="24,8 42,40 6,40" stroke="currentColor" stroke-width="1" fill="none" />
 </svg>
 `;
@@ -18,7 +18,7 @@ const squareSVG = `
 `;
 
 const crossSVG = `
-<svg viewBox="2 2 44 44">
+<svg viewBox="2 1 44 44">
   <g transform="rotate(45 24 24)">
     <rect x="23" y="6" width="1" height="35" fill="currentColor" />
     <rect x="6" y="23" width="35" height="1" fill="currentColor" />
