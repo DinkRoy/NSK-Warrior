@@ -19,31 +19,18 @@ if ('serviceWorker' in navigator) {
 function showUpdateNotification() {
   const notification = document.createElement('div');
   notification.innerHTML = `
-    <div id="update-notification" style="position: fixed; top: -50px; left: 50%; transform: translateX(-50%); width: fit-content; height: fit-content; backdrop-filter: blur(10px); border-radius: 20px; z-index: 9999; transition: top 0.5s;">
-      <p style="display: flex; align-items: center; gap: 10px; white-space: nowrap;">
-        An update is available!
-        <button id="update-button" style="background: #a00000; color: white; font-size: 1em; font-weight: bold; border: none; border-radius: 10px; padding: 5px 15px; cursor: pointer;">
-          Update
-        </button>
-        <button id="dismiss-button" style="background: #888; color: white; font-size: 1em; font-weight: bold; border: none; border-radius: 10px; padding: 5px 15px; cursor: pointer;">
-          Dismiss
-        </button>
-      </p>
+    <div id="update-notification" style="position: fixed; top: -50px; left: 50%; transform: translateX(-50%); width: fit-content; height: fit-content; backdrop-filter: blur(10px); border-radius: 20px; background-color: rgba(255, 255, 255, 0.3); display: flex; align-items: center; text-align: center; color: white; font-size: 1em; font-family: system-ui; padding: 10px; z-index: 1000; transition: top 0.5s ease-in-out;">
+      <p style="display: flex; align-items: center; gap: 10px; white-space: nowrap; ">An update is available!<button id="update-button" style="background: #a00000; color: white; font-size: 1em; font-weight: 600; padding: 10px 15px; border: none; border-radius: 10px;">Update</button></p>
     </div>
   `;
   document.body.appendChild(notification);
-
+  
   setTimeout(() => {
     document.getElementById('update-notification').style.top = '10px';
-  }, 100);
-
+  }, 100); // Delay to trigger the CSS transition
+  
   const updateButton = document.getElementById('update-button');
   updateButton.addEventListener('click', () => {
     window.location.reload();
-  });
-
-  const dismissButton = document.getElementById('dismiss-button');
-  dismissButton.addEventListener('click', () => {
-    notification.remove();
   });
 }
