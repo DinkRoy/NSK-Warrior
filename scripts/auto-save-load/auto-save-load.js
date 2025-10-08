@@ -8,7 +8,7 @@ const createNewButton = () => {
     window.EJS_emulator.touch = true;
   });
   window.EJS_emulator.addEventListener(newButton, "click", async (e) => {
-    let result = confirm("Start a new game? This deletes your save.");
+    let result = confirm("Are you sure, Matt? This deletes your save.");
     if (result) {
       window.EJS_startNewGame = true;
       window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
