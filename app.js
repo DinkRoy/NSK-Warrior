@@ -5,7 +5,9 @@ if ('serviceWorker' in navigator) {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
         registration.update();
         registration.addEventListener('updatefound', () => {
-          showUpdateNotification();
+          if (localStorage.getItem('gameActive') === 'true') {
+            showUpdateNotification();
+          }
         })
       })
       .catch(error => {
