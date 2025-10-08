@@ -3,7 +3,7 @@ const APP_CACHE = 'nsk-warrior-cache-v06';
 const networkFirstFiles = [
     '/index.html',
     '/app.js',
-    '/scripts/auto-save-load.js',
+    '/scripts/auto-save-load/auto-save-load.js',
     '/manifest.json',
     '/scripts/gamepad.js'
 ];
