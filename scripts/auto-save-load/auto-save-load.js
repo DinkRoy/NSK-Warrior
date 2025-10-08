@@ -68,7 +68,7 @@ EJS_onGameStart = async function(emulator) {
       if (state) {
         console.log("Save state found, attempting to restore...");
         // Wait for the emulator to initialize before loading state
-        await new Promise(res => setTimeout(res, 1500));
+        await new Promise(res => setTimeout(res, 500));
         window.EJS_emulator.gameManager.loadState(state);
         console.log("Save state restored successfully!");
       } else {
