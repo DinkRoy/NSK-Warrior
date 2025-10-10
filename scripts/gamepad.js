@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
             .ejs_virtualGamepad_left *, .ejs_virtualGamepad_right * {
                 pointer-events: auto; /* Allow child elements to handle their own events */
             }
+            .ejs_virtualGamepad_button_down {
+                border-radius: 50%;
+            }
         `;
     document.head.appendChild(style);
   }
