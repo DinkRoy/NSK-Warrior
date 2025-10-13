@@ -8,7 +8,8 @@ const createNewButton = () => {
     window.EJS_emulator.touch = true;
   });
   window.EJS_emulator.addEventListener(newButton, "click", async (e) => {
-    let result = confirm("Are you sure, Matt? This deletes your save.");
+    e.stopPropagation();
+    let result = confirm("Are you sure? This deletes your save.");
     if (result) {
       window.EJS_startNewGame = true;
       window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
@@ -36,14 +37,16 @@ const observer = new MutationObserver((mutationsList, observer) => {
       startButton.style.paddingLeft = "30px";
       startButton.style.paddingRight = "30px";
       createNewButton();
-      startButton.addEventListener("click", () => {
+      startButton.addEventListener("click", (e) => {
+        e.stopPropagation();
         startButton.remove();
         document.querySelector('.ejs_new_button')?.remove();
         document.body.requestFullscreen();
       });
     } else {
       document.querySelector('.ejs_start_button').innerText = "Start Game";
-      window.EJS_emulator.addEventListener(startButton, "touchstart", () => {
+      window.EJS_emulator.addEventListener(startButton, "touchstart", (e) => {
+        e.stopPropagation();
         window.EJS_emulator.touch = true;
       });
       window.EJS_emulator.addEventListener(startButton, "click", (e) => {
