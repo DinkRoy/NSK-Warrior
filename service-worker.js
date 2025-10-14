@@ -18,7 +18,7 @@ const urlsToCache = [
     '/',
     '/booklet/panzoom.min.js',
     '/booklet/turn.min.js',
-    'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js',
+    '/booklet/jquery-3.7.1.min.js',
     '/booklet/manual_icon.webp',
     'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
     '/booklet/sounds/page_turn.mp3',
