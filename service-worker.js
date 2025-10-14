@@ -44,8 +44,6 @@ const urlsToCache = [
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
     '/booklet/pages/20.webp',
-    '/emulatorjs/4.0.9/data/',
-    '/emulatorjs/4.0.9/data/loader.js',
     'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip',
     'https://nsk-warrior-kf-files.netlify.app/scph5501.bin'
 ];
