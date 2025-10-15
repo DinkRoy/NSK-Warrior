@@ -1,24 +1,20 @@
-const APP_CACHE = 'nsk-warrior-cache-v' + new Date().getTime(); // Auto-versioning
-
+const APP_CACHE = 'nsk-warrior-cache-v001';
 const networkFirstFiles = [
     '/',
     '/index.html',
     '/app.js',
     '/manifest.json',
-    '/scripts/auto-save-load/auto-save-load.js',
-    '/scripts/auto-save-load/auto-save-load.css',
     '/booklet/booklet.css',
     '/booklet/booklet.js',
-    '/scripts/gamepad.js',
-    'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).state'
+    '/scripts/auto-save-load/auto-save-load.js',
+    '/scripts/auto-save-load/auto-save-load.css',
+    '/scripts/gamepad.js'
 ];
-
-// Core assets to pre-cache for offline functionality
 const urlsToCache = [
     '/',
+    '/booklet/jquery-3.7.1.min.js',
     '/booklet/panzoom.min.js',
     '/booklet/turn.min.js',
-    '/booklet/jquery-3.7.1.min.js',
     '/booklet/manual_icon.webp',
     'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
     '/booklet/sounds/page_turn.mp3',
@@ -43,130 +39,80 @@ const urlsToCache = [
     '/booklet/pages/17.webp',
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
-    '/booklet/pages/20.webp',
-    'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip',
-    'https://nsk-warrior-kf-files.netlify.app/scph5501.bin'
+    '/booklet/pages/20.webp'
 ];
 
-// --- INSTALL ---
 self.addEventListener('install', event => {
     self.skipWaiting();
-    console.log('Service Worker: Installing...');
-    
     event.waitUntil(
-        caches.open(APP_CACHE)
-        .then(cache => {
-            console.log('Service Worker: Caching core assets');
-            // Use Promise.all to handle individual cache failures gracefully
+        caches.open(APP_CACHE).then(cache => {
             return Promise.all(
                 urlsToCache.map(url => {
-                    return cache.add(url).catch(error => {
-                        console.warn(`Service Worker: Failed to cache ${url}`, error);
+                    return fetch(url).then(response => {
+                        if (!response.ok) {
+                            throw new TypeError('Bad response status');
+                        }
+                        return cache.put(url, response);
+                    }).catch(error => {
+                        console.error('Failed to cache:', url, error);
                     });
                 })
             );
         })
-        .then(() => {
-            console.log('Service Worker: Install completed');
-        })
     );
 });
 
-// --- ACTIVATE ---
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Activating...');
     event.waitUntil(
-        caches.keys().then(cacheNames => {
+        caches.keys().then(keys => {
             return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== APP_CACHE) {
-                        console.log('Service Worker: Deleting old cache', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
+                keys.filter(key => key !== APP_CACHE)
+                    .map(key => caches.delete(key))
             );
         }).then(() => {
-            console.log('Service Worker: Now controlling clients');
             return self.clients.claim();
         })
     );
 });
 
-// --- FETCH ---
 self.addEventListener('fetch', event => {
-    // Only handle GET requests
-    if (event.request.method !== 'GET') {
-        return;
-    }
-    
     const requestUrl = new URL(event.request.url);
-    
-    // Check if this is a network-first file
-    const isNetworkFirst = networkFirstFiles.some(path => {
-        // More flexible matching for paths
-        return requestUrl.pathname === path ||
-            requestUrl.pathname.startsWith(path) ||
-            (path === '/' && requestUrl.pathname === '/index.html');
-    });
-    
-    if (isNetworkFirst) {
-        console.log('Service Worker: Network-first strategy for', requestUrl.pathname);
+    if (networkFirstFiles.includes(requestUrl.pathname)) {
+        // Network-first strategy for specific files
         event.respondWith(
-            fetch(event.request, {
-                cache: 'no-cache'
-            })
+            fetch(event.request, {cache: 'reload'}))
             .then(networkResponse => {
-                // Only cache successful responses
                 if (networkResponse && networkResponse.status === 200) {
                     const responseClone = networkResponse.clone();
                     caches.open(APP_CACHE).then(cache => {
-                        console.log('Service Worker: Updating cache for', requestUrl.pathname);
                         cache.put(event.request, responseClone);
                     });
                 }
                 return networkResponse;
-            })
-            .catch(error => {
-                console.warn('Service Worker: Network failed, falling back to cache for', requestUrl.pathname, error);
-                return caches.match(event.request)
-                    .then(cachedResponse => {
-                        if (cachedResponse) {
-                            return cachedResponse;
-                        }
-                        // If no cache, return a fallback or error
-                        return new Response('Network error and no cached version available', {
-                            status: 503,
-                            statusText: 'Service Unavailable'
-                        });
-                    });
+            }).catch(() => {
+                return caches.match(event.request);
             })
         );
-        return;
-    }
-    
-    // Stale-While-Revalidate for all other requests
-    console.log('Service Worker: Stale-while-revalidate for', requestUrl.pathname);
-    event.respondWith(
-        caches.open(APP_CACHE).then(cache => {
-            return cache.match(event.request).then(cachedResponse => {
-                // Always fetch in background to update cache
-                const fetchPromise = fetch(event.request, {
-                        cache: 'no-cache'
-                    })
-                    .then(networkResponse => {
-                        if (networkResponse && networkResponse.status === 200) {
-                            console.log('Service Worker: Updating cache in background for', requestUrl.pathname);
-                            cache.put(event.request, networkResponse.clone());
-                        }
+    } else {
+        // Cache-first strategy for all other files
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                if (response) {
+                    return response;
+                }
+                return fetch(event.request).then(networkResponse => {
+                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic' || event.request.method !== 'GET') {
                         return networkResponse;
-                    })
-                    .catch(error => {
-                        console.warn('Service Worker: Background fetch failed for', requestUrl.pathname, error);
+                    }
+                    const responseToCache = networkResponse.clone();
+                    caches.open(APP_CACHE).then(cache => {
+                        cache.put(event.request, responseToCache);
                     });
-                
-                // Return cached version immediately, or wait for network if no cache
-                return cachedResponse || fetchPromise;
-            });
-        })
-    );
+                    return networkResponse;
+                }).catch(() => {
+                    return caches.match(event.request);
+                });
+            })
+        );
+    }
 });
