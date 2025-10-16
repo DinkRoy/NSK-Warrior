@@ -86,6 +86,80 @@
     EJS_defaultOptions = {
       'save-state-location': 'browser'
     };
+        /**
+ * Enable EmulatorJS persistent file caching via IndexedDB.
+ * Works after EmulatorJS has loaded and initialized.
+ */
+EJS_onGameReady = async function() {
+  console.log('[EJS] Installing IndexedDB offline cache hook...');
+
+  // Simple IndexedDB wrapper
+  const openDB = (name, version, upgrade) => new Promise((resolve, reject) => {
+    const req = indexedDB.open(name, version);
+    req.onupgradeneeded = e => upgrade && upgrade(e.target.result);
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
+
+  // Open or create our cache database
+  const db = await openDB('EJS-cache', 1, db => {
+    if (!db.objectStoreNames.contains('files'))
+      db.createObjectStore('files');
+  });
+
+  const getFromDB = key => new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readonly');
+    const store = tx.objectStore('files');
+    const req = store.get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+
+  const putToDB = (key, data) => new Promise((resolve, reject) => {
+    const tx = db.transaction('files', 'readwrite');
+    const store = tx.objectStore('files');
+    const req = store.put(data, key);
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+
+  // Monkey-patch downloadFile so it checks IndexedDB first
+  const originalDownloadFile = EmulatorJS.prototype.downloadFile;
+  EmulatorJS.prototype.downloadFile = function(path, cb, progressCB, notWithPath, opts = {}) {
+    // Skip non-GET methods
+    if (opts.method && opts.method !== 'GET') {
+      return originalDownloadFile.call(this, path, cb, progressCB, notWithPath, opts);
+    }
+
+    getFromDB(path).then(stored => {
+      if (stored) {
+        // ✅ Serve from local DB
+        cb({ data: stored, headers: {} });
+      } else {
+        // 🌐 Fetch normally, then cache
+        originalDownloadFile.call(this, path, async result => {
+          if (result !== -1 && result.data) {
+            try {
+              await putToDB(path, result.data);
+              console.log('[EJS] Cached:', path);
+            } catch (e) {
+              console.warn('[EJS] Cache store failed:', e);
+            }
+          }
+          cb(result);
+        }, progressCB, notWithPath, opts);
+      }
+    });
+  };
+
+  // Try to ensure persistence
+  if (navigator.storage && navigator.storage.persist) {
+    const persisted = await navigator.storage.persist();
+    console.log('[EJS] Persistent storage:', persisted ? 'granted' : 'not granted');
+  }
+
+  console.log('[EJS] IndexedDB offline caching active!');
+};
   </script>
   <script src="/scripts/gamepad.js"></script>
   <script src="/scripts/auto-save-load/auto-save-load.js"></script>
