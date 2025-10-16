@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v03';
+const APP_CACHE = 'nsk-warrior-cache-v04';
 const networkFirstFiles = [
     '/',
     '/index.html',
@@ -49,9 +49,10 @@ self.addEventListener('install', event => {
             return Promise.all(
                 urlsToCache.map(url => {
                     return fetch(url).then(response => {
-                        if (!response.ok) {
-                            throw new TypeError('Bad response status');
+                        if (!response || !response.ok) {
+                            throw new TypeError('Bad response status for ' + url);
                         }
+                        // store the response in the cache
                         return cache.put(url, response);
                     }).catch(error => {
                         console.error('Failed to cache:', url, error);
@@ -77,19 +78,26 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
+
     if (networkFirstFiles.includes(requestUrl.pathname)) {
         // Network-first strategy for specific files
         event.respondWith(
-            fetch(event.request, {cache: 'reload'}))
+            fetch(event.request, { cache: 'reload' })
             .then(networkResponse => {
-                if (networkResponse && networkResponse.status === 200) {
+                // If we got a valid response, cache it (only for GET)
+                if (networkResponse && networkResponse.ok && event.request.method === 'GET') {
                     const responseClone = networkResponse.clone();
                     caches.open(APP_CACHE).then(cache => {
-                        cache.put(event.request, responseClone);
+                        cache.put(event.request, responseClone).catch(err => {
+                            // Some responses (opaque, cross-origin) may fail to be stored; handle gracefully
+                            console.warn('Cache put failed for', event.request.url, err);
+                        });
                     });
                 }
                 return networkResponse;
-            }).catch(() => {
+            })
+            .catch(() => {
+                // On failure, try the cache
                 return caches.match(event.request);
             })
         );
@@ -101,12 +109,14 @@ self.addEventListener('fetch', event => {
                     return response;
                 }
                 return fetch(event.request).then(networkResponse => {
-                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic' || event.request.method !== 'GET') {
+                    if (!networkResponse || networkResponse.status !== 200 || event.request.method !== 'GET') {
                         return networkResponse;
                     }
                     const responseToCache = networkResponse.clone();
                     caches.open(APP_CACHE).then(cache => {
-                        cache.put(event.request, responseToCache);
+                        cache.put(event.request, responseToCache).catch(err => {
+                            console.warn('Cache put failed for', event.request.url, err);
+                        });
                     });
                     return networkResponse;
                 }).catch(() => {
