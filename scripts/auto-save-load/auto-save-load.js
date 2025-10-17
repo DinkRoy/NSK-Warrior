@@ -16,7 +16,7 @@ const createNewButton = () => {
       document.querySelector('.ejs_start_button').remove();
       newButton.remove();
       try {
-        document.body.requestFullscreen();
+        await document.body.requestFullscreen();
       } catch (error) {
         console.error('Failed to request fullscreen:', error);
       }
@@ -41,12 +41,12 @@ const observer = new MutationObserver((mutationsList, observer) => {
       startButton.style.paddingLeft = "30px";
       startButton.style.paddingRight = "30px";
       createNewButton();
-      startButton.addEventListener("click", (e) => {
+      startButton.addEventListener("click", async (e) => {
         e.stopPropagation();
         startButton.remove();
         document.querySelector('.ejs_new_button')?.remove();
         try {
-          document.body.requestFullscreen();
+          await document.body.requestFullscreen();
         } catch (error) {
           console.error('Failed to request fullscreen:', error);
         }
@@ -57,9 +57,9 @@ const observer = new MutationObserver((mutationsList, observer) => {
         e.stopPropagation();
         window.EJS_emulator.touch = true;
       });
-      window.EJS_emulator.addEventListener(startButton, "click", (e) => {
+      window.EJS_emulator.addEventListener(startButton, "click", async (e) => {
         try {
-          document.body.requestFullscreen();
+          await document.body.requestFullscreen();
         } catch (error) {
           console.error('Failed to request fullscreen:', error);
         }
