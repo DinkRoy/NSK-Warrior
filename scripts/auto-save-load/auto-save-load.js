@@ -9,17 +9,13 @@ const createNewButton = () => {
   });
   window.EJS_emulator.addEventListener(newButton, "click", async (e) => {
     e.stopPropagation();
-    let result = confirm("Are you sure, Matt? This deletes your save.");
+    let result = confirm("Are you sure? This deletes your save.");
     if (result) {
       window.EJS_startNewGame = true;
       window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
       document.querySelector('.ejs_start_button').remove();
       newButton.remove();
-      try {
-        await document.body.requestFullscreen();
-      } catch (error) {
-        console.error('Failed to request fullscreen:', error);
-      }
+      goFullScreen();
     } else {
       e.preventDefault();
     }
@@ -41,15 +37,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
       startButton.style.paddingLeft = "30px";
       startButton.style.paddingRight = "30px";
       createNewButton();
-      startButton.addEventListener("click", async (e) => {
+      startButton.addEventListener("click", (e) => {
         e.stopPropagation();
         startButton.remove();
         document.querySelector('.ejs_new_button')?.remove();
-        try {
-          await document.body.requestFullscreen();
-        } catch (error) {
-          console.error('Failed to request fullscreen:', error);
-        }
+        goFullScreen();
       });
     } else {
       document.querySelector('.ejs_start_button').innerText = "Start Game";
@@ -57,18 +49,33 @@ const observer = new MutationObserver((mutationsList, observer) => {
         e.stopPropagation();
         window.EJS_emulator.touch = true;
       });
-      window.EJS_emulator.addEventListener(startButton, "click", async (e) => {
-        try {
-          await document.body.requestFullscreen();
-        } catch (error) {
-          console.error('Failed to request fullscreen:', error);
-        }
+      window.EJS_emulator.addEventListener(startButton, "click", (e) => {
+        goFullScreen();
       });
     }
   }
 });
 observer.observe(document.body, { childList: true, subtree: true });
 
+function goFullScreen() {
+  const el = document.body;
+  const requestFS =
+    el.requestFullscreen ||
+    el.webkitRequestFullscreen ||
+    el.mozRequestFullScreen ||
+    el.msRequestFullscreen;
+
+  if (requestFS) {
+    requestFS.call(el)
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('Failed to enter fullscreen mode:', error);
+      });
+  } else {
+    console.error('Fullscreen API is not supported by this browser.');
+  }
+};
 
 // Load save state automatically to continue game
 EJS_onGameStart = async function(emulator) {
