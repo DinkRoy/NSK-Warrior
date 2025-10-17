@@ -1,22 +1,22 @@
-const APP_CACHE = 'nsk-warrior-cache-v05';
+const APP_CACHE = 'nsk-warrior-cache-v06';
 const networkFirstFiles = [
     '/',
     '/index.html',
     '/app.js',
     '/manifest.json',
-    '/booklet/booklet.css',
-    '/booklet/booklet.js',
     '/scripts/auto-save-load/auto-save-load.js',
     '/scripts/auto-save-load/auto-save-load.css',
     '/scripts/gamepad.js'
 ];
 const urlsToCache = [
     '/',
+    'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
+    '/booklet/booklet.css',
+    '/booklet/booklet.js',
     '/booklet/jquery-3.7.1.min.js',
     '/booklet/panzoom.min.js',
     '/booklet/turn.min.js',
     '/booklet/manual_icon.webp',
-    'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
     '/booklet/sounds/page_turn.mp3',
     '/booklet/sounds/slide_in.mp3',
     '/booklet/sounds/slide_out.mp3',
