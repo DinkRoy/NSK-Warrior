@@ -70,8 +70,8 @@ function showUpdateNotification() {
   console.log('showUpdateNotification called');
   const notification = document.createElement('div');
   notification.innerHTML = `
-    <div id="update-notification" style="position: fixed; top: -50px; left: 50%; transform: translateX(-50%); width: fit-content; height: fit-content; backdrop-filter: blur(10px); border-radius: 20px; padding: 10px 14px; background: rgba(0,0,0,0.6); z-index: 9999; transition: top 300ms ease;">
-      <p style="display: flex; align-items: center; gap: 10px; white-space: nowrap; margin:0; color: #fff;">An update is available!
+    <div id="update-notification" style="position: fixed; top: -50px; left: 50%; transform: translateX(-50%); width: fit-content; height: fit-content; backdrop-filter: blur(10px); border-radius: 20px; background-color: rgba(255, 255, 255, 0.3); display: flex; align-items: center; text-align: center; color: white; font-size: 1em; font-family: system-ui; padding: 10px; z-index: 9999; transition: top 0.5s ease-in-out;">
+      <p style="display: flex; align-items: center; gap: 10px; white-space: nowrap; margin:0;">An update is available!
         <button id="update-button" style="margin-left:8px; background: #a00000; color: white; font-size: 1em; font-weight: 600; border: none; padding: 6px 10px; border-radius: 6px;">Reload</button>
       </p>
     </div>
