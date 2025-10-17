@@ -15,7 +15,11 @@ const createNewButton = () => {
       window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
       document.querySelector('.ejs_start_button').remove();
       newButton.remove();
-      document.body.requestFullscreen();
+      try {
+        document.body.requestFullscreen();
+      } catch (error) {
+        console.error('Failed to request fullscreen:', error);
+      }
     } else {
       e.preventDefault();
     }
@@ -41,7 +45,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
         e.stopPropagation();
         startButton.remove();
         document.querySelector('.ejs_new_button')?.remove();
-        document.body.requestFullscreen();
+        try {
+          document.body.requestFullscreen();
+        } catch (error) {
+          console.error('Failed to request fullscreen:', error);
+        }
       });
     } else {
       document.querySelector('.ejs_start_button').innerText = "Start Game";
@@ -50,7 +58,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
         window.EJS_emulator.touch = true;
       });
       window.EJS_emulator.addEventListener(startButton, "click", (e) => {
-        document.body.requestFullscreen();
+        try {
+          document.body.requestFullscreen();
+        } catch (error) {
+          console.error('Failed to request fullscreen:', error);
+        }
       });
     }
   }
