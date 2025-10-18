@@ -5,7 +5,7 @@
 #ejs-multi-save-ui {
     position: fixed;
     top: 10px;
-    right: 10px;
+    right: 800px;
     z-index: 10000;
     background: rgba(0, 0, 0, 0.85);
     color: white;
