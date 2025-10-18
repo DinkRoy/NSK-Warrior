@@ -59,21 +59,29 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 function goFullScreen() {
   const el = document.body;
+  const isFullscreenEnabled =
+    document.fullscreenEnabled ||
+    document.webkitFullscreenEnabled ||
+    document.mozFullScreenEnabled ||
+    document.msFullscreenEnabled;
+  
+  if (!isFullscreenEnabled) {
+    console.warn('Fullscreen is not supported by this browser or environment.');
+    return;
+  }
+  
   const requestFS =
     el.requestFullscreen ||
     el.webkitRequestFullscreen ||
     el.mozRequestFullScreen ||
     el.msRequestFullscreen;
-
+  
   if (requestFS) {
     requestFS.call(el)
-      .then(() => {
-      })
+      .then(() => {})
       .catch((error) => {
         console.error('Failed to enter fullscreen mode:', error);
       });
-  } else {
-    console.error('Fullscreen API is not supported by this browser.');
   }
 };
 
