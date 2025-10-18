@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmulatorJS Multi-Save State Manager Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        
+        .demo-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .demo-section h2 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        
+        .code-block {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .usage-example {
+            background: #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .note {
+            background: #ffeb3b;
+            color: #000;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .warning {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EmulatorJS Multi-Save State Manager</h1>
+        
+        <div class="demo-section">
+            <h2>Overview</h2>
+            <p>This script extends EmulatorJS to support multiple save state stores, allowing you to create, switch between, and manage different save state profiles. Each profile maintains its own set of save states, enabling you to have multiple game sessions or different playthroughs.</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>Features</h2>
+            <ul class="feature-list">
+                <li>Create multiple save state profiles</li>
+                <li>Switch between different profiles seamlessly</li>
+                <li>Save/load states to/from specific profiles</li>
+                <li>List all available profiles</li>
+                <li>Delete profiles (except default)</li>
+                <li>Export/import profile data as JSON</li>
+                <li>Intuitive UI with profile management controls</li>
+                <li>Automatic profile switching with visual feedback</li>
+                <li>Error handling and user notifications</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h2>How It Works</h2>
+            <p>The script works by:</p>
+            <ol>
+                <li><strong>Enhancing Storage:</strong> It wraps the original EmulatorJS storage.states object to add profile-based key prefixes</li>
+                <li><strong>Profile Management:</strong> Each profile gets its own namespace in the same IndexedDB database</li>
+                <li><strong>Key Prefixing:</strong> Save state keys are prefixed with the profile name (e.g., "profile1:game.state")</li>
+                <li><strong>UI Integration:</strong> Provides a floating UI panel for easy profile management</li>
+            </ol>
+        </div>
+
+        <div class="demo-section">
+            <h2>Installation</h2>
+            <p>To use this script with your EmulatorJS setup:</p>
+            <div class="code-block">
+&lt;!-- Include the CSS file --&gt;
+&lt;link rel="stylesheet" href="/scripts/multi-save-state-manager.css"&gt;
+
+&lt;!-- Include the script after EmulatorJS --&gt;
+&lt;script src="/scripts/multi-save-state-manager.js"&gt;&lt;/script&gt;
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Usage Examples</h2>
+            
+            <h3>Basic Usage</h3>
+            <div class="usage-example">
+                <p>Once loaded, the script automatically provides a UI panel in the top-right corner of your page. You can:</p>
+                <ul>
+                    <li>Select different profiles from the dropdown</li>
+                    <li>Create new profiles by typing a name and clicking "+"</li>
+                    <li>Delete profiles (except the default one)</li>
+                    <li>Export/import profile data</li>
+                </ul>
+            </div>
+
+            <h3>Programmatic Usage</h3>
+            <div class="code-block">
+// Access the manager instance
+const manager = window.EJS_MultiSaveStateManager;
+
+// Create a new profile
+await manager.createProfile('my-profile');
+
+// Switch to a profile
+await manager.switchProfile('my-profile');
+
+// Get current profile
+const currentProfile = manager.getCurrentProfile();
+
+// Get all profiles
+const profiles = manager.getProfiles();
+
+// Export profile data
+const exportData = await manager.exportProfile('my-profile');
+
+// Import profile data
+await manager.importProfile('my-profile', importData);
+
+// Delete a profile
+await manager.deleteProfile('my-profile');
+            </div>
+
+            <h3>Event Listening</h3>
+            <div class="code-block">
+// Listen for profile changes
+window.addEventListener('ejs-profile-changed', (event) => {
+    console.log('Profile changed to:', event.detail.profile);
+    // Update your UI or perform other actions
+});
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>API Reference</h2>
+            
+            <h3>Methods</h3>
+            <div class="code-block">
+// Create a new profile
+createProfile(profileName: string): Promise&lt;string&gt;
+
+// Switch to a different profile
+switchProfile(profileName: string): Promise&lt;void&gt;
+
+// Delete a profile (cannot delete 'default')
+deleteProfile(profileName: string): Promise&lt;void&gt;
+
+// Get list of available profiles
+getProfiles(): string[]
+
+// Get current profile name
+getCurrentProfile(): string
+
+// Export profile data
+exportProfile(profileName: string): Promise&lt;object&gt;
+
+// Import profile data
+importProfile(profileName: string, importData: object): Promise&lt;void&gt;
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Technical Details</h2>
+            <p>The script works by:</p>
+            <ul>
+                <li><strong>Database:</strong> Uses the same "EmulatorJS-states" IndexedDB database</li>
+                <li><strong>Key Format:</strong> Profile keys are prefixed as "{profileName}:{originalKey}"</li>
+                <li><strong>Storage:</strong> Profile metadata is stored in localStorage</li>
+                <li><strong>Compatibility:</strong> Works with existing EmulatorJS save/load functionality</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> This script enhances the existing EmulatorJS storage system without modifying the core files. It's designed to be non-destructive and can be safely added to existing EmulatorJS implementations.
+        </div>
+
+        <div class="warning">
+            <strong>Warning:</strong> Always backup your save states before using this script, especially when deleting profiles. The deletion is permanent and cannot be undone.
+        </div>
+
+        <div class="demo-section">
+            <h2>Demo</h2>
+            <p>To see this script in action, load it on a page with EmulatorJS. The UI panel will appear in the top-right corner, allowing you to manage save state profiles.</p>
+            <p>Try creating different profiles and switching between them to see how save states are isolated per profile.</p>
+        </div>
+    </div>
+</body>
+</html>

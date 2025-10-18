@@ -1,0 +1,165 @@
+/**
+ * CSS styles for Multi-Save State Manager UI
+ */
+
+#ejs-multi-save-ui {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    min-width: 220px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+#ejs-multi-save-ui h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #4CAF50;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+}
+
+#ejs-current-profile {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px;
+    background: rgba(76, 175, 80, 0.2);
+    border-radius: 4px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+#ejs-profile-select {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px;
+    background: #2a2a2a;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+#ejs-profile-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+#ejs-multi-save-ui input[type="text"] {
+    flex: 1;
+    padding: 6px;
+    background: #2a2a2a;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+#ejs-multi-save-ui input[type="text"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+#ejs-multi-save-ui button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+#ejs-multi-save-ui button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#ejs-multi-save-ui button:active {
+    transform: translateY(0);
+}
+
+#ejs-multi-save-ui .new-profile-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+#ejs-multi-save-ui .new-profile-btn:hover {
+    background: #45a049;
+}
+
+#ejs-multi-save-ui .delete-profile-btn {
+    width: 100%;
+    background: #f44336;
+    color: white;
+    margin-bottom: 5px;
+}
+
+#ejs-multi-save-ui .delete-profile-btn:hover {
+    background: #da190b;
+}
+
+#ejs-multi-save-ui .delete-profile-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#ejs-multi-save-ui .profile-controls {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #ejs-multi-save-ui {
+        top: 5px;
+        right: 5px;
+        left: 5px;
+        min-width: auto;
+        font-size: 12px;
+    }
+}
+
+/* Animation for profile switching */
+@keyframes profileSwitch {
+    0% { opacity: 0.7; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+#ejs-multi-save-ui.profile-switching {
+    animation: profileSwitch 0.3s ease;
+}
+
+/* Tooltip styles */
+#ejs-multi-save-ui [title] {
+    position: relative;
+}
+
+#ejs-multi-save-ui [title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 10001;
+    margin-bottom: 5px;
+}
