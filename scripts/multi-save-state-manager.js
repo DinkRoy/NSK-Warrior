@@ -31,9 +31,25 @@ class MultiSaveStateManager {
             this.currentProfile = savedProfile;
         }
 
-        // Ensure we have a profiles list
+        // Ensure we have a profiles list with version profiles
         if (!localStorage.getItem(this.profilesKey)) {
-            localStorage.setItem(this.profilesKey, JSON.stringify(['default']));
+            localStorage.setItem(this.profilesKey, JSON.stringify(['default', 'version1', 'version2', 'version3']));
+        } else {
+            // Add version profiles if they don't exist
+            const profiles = this.getProfiles();
+            const versionProfiles = ['version1', 'version2', 'version3'];
+            let updated = false;
+            
+            versionProfiles.forEach(profile => {
+                if (!profiles.includes(profile)) {
+                    profiles.push(profile);
+                    updated = true;
+                }
+            });
+            
+            if (updated) {
+                localStorage.setItem(this.profilesKey, JSON.stringify(profiles));
+            }
         }
 
         // Override the original storage.states with our enhanced version

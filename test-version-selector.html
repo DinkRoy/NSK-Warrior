@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version Selector Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .test-button:hover {
+            background: #45a049;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #333;
+            border-radius: 4px;
+        }
+    </style>
+    <link rel="stylesheet" href="/scripts/version-selector.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Version Selector Test</h1>
+        
+        <div class="test-section">
+            <h2>Test Version Selector</h2>
+            <p>Click the buttons below to test the version selector functionality:</p>
+            
+            <button class="test-button" onclick="testStartGame()">Test Start Game</button>
+            <button class="test-button" onclick="testContinueGame()">Test Continue Game</button>
+            <button class="test-button" onclick="testNewGame()">Test New Game</button>
+            <button class="test-button" onclick="testHide()">Hide Selector</button>
+            
+            <div class="status" id="status">
+                Status: Ready to test
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Current State</h2>
+            <div id="current-state">
+                <p>Selected Version: <span id="selected-version">None</span></p>
+                <p>Current Action: <span id="current-action">None</span></p>
+                <p>Is Visible: <span id="is-visible">False</span></p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Instructions</h2>
+            <ol>
+                <li>Click "Test Start Game" to see the version selector slide in from the right</li>
+                <li>Select one of the 3 version buttons to see the action execute</li>
+                <li>Try the other test buttons to see different behaviors</li>
+                <li>Use the close button (×) or click outside to close the selector</li>
+                <li>Press Escape key to close the selector</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Mock EmulatorJS environment for testing
+        window.EJS_emulator = {
+            startButtonClicked: function() {
+                updateStatus('EmulatorJS startButtonClicked called');
+            },
+            addEventListener: function(element, event, handler) {
+                element.addEventListener(event, handler);
+            },
+            createElement: function(tag) {
+                return document.createElement(tag);
+            }
+        };
+
+        // Mock goFullScreen function
+        function goFullScreen() {
+            updateStatus('goFullScreen called');
+        }
+
+        // Load the version selector script
+        const script = document.createElement('script');
+        script.src = '/scripts/version-selector.js';
+        script.onload = function() {
+            updateStatus('Version Selector loaded successfully');
+            updateCurrentState();
+        };
+        document.head.appendChild(script);
+
+        function testStartGame() {
+            if (window.EJS_VersionSelector) {
+                window.EJS_VersionSelector.show('start');
+                updateStatus('Start Game test triggered');
+                updateCurrentState();
+            } else {
+                updateStatus('Version Selector not loaded yet');
+            }
+        }
+
+        function testContinueGame() {
+            if (window.EJS_VersionSelector) {
+                window.EJS_VersionSelector.show('continue');
+                updateStatus('Continue Game test triggered');
+                updateCurrentState();
+            } else {
+                updateStatus('Version Selector not loaded yet');
+            }
+        }
+
+        function testNewGame() {
+            if (window.EJS_VersionSelector) {
+                window.EJS_VersionSelector.show('new');
+                updateStatus('New Game test triggered');
+                updateCurrentState();
+            } else {
+                updateStatus('Version Selector not loaded yet');
+            }
+        }
+
+        function testHide() {
+            if (window.EJS_VersionSelector) {
+                window.EJS_VersionSelector.hide();
+                updateStatus('Hide selector called');
+                updateCurrentState();
+            } else {
+                updateStatus('Version Selector not loaded yet');
+            }
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = 'Status: ' + message;
+        }
+
+        function updateCurrentState() {
+            if (window.EJS_VersionSelector) {
+                const selectedVersion = window.EJS_VersionSelector.getSelectedVersion();
+                document.getElementById('selected-version').textContent = 
+                    selectedVersion ? selectedVersion.name : 'None';
+                document.getElementById('current-action').textContent = 
+                    window.EJS_VersionSelector.currentAction || 'None';
+                document.getElementById('is-visible').textContent = 
+                    window.EJS_VersionSelector.isVisible ? 'True' : 'False';
+            }
+        }
+
+        // Update state every second
+        setInterval(updateCurrentState, 1000);
+    </script>
+</body>
+</html>

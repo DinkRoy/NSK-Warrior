@@ -11,11 +11,16 @@ const createNewButton = () => {
     e.stopPropagation();
     let result = confirm("Are you sure? This deletes your save.");
     if (result) {
-      window.EJS_startNewGame = true;
-      window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
-      document.querySelector('.ejs_start_button').remove();
-      newButton.remove();
-      goFullScreen();
+      // Show version selector instead of going directly to fullscreen
+      if (window.EJS_VersionSelector) {
+        window.EJS_VersionSelector.show('new');
+      } else {
+        window.EJS_startNewGame = true;
+        window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
+        document.querySelector('.ejs_start_button').remove();
+        newButton.remove();
+        goFullScreen();
+      }
     } else {
       e.preventDefault();
     }
@@ -39,9 +44,14 @@ const observer = new MutationObserver((mutationsList, observer) => {
       createNewButton();
       startButton.addEventListener("click", (e) => {
         e.stopPropagation();
-        startButton.remove();
-        document.querySelector('.ejs_new_button')?.remove();
-        goFullScreen();
+        // Show version selector instead of going directly to fullscreen
+        if (window.EJS_VersionSelector) {
+          window.EJS_VersionSelector.show('continue');
+        } else {
+          startButton.remove();
+          document.querySelector('.ejs_new_button')?.remove();
+          goFullScreen();
+        }
       });
     } else {
       document.querySelector('.ejs_start_button').innerText = "Start Game";
@@ -50,7 +60,13 @@ const observer = new MutationObserver((mutationsList, observer) => {
         window.EJS_emulator.touch = true;
       });
       window.EJS_emulator.addEventListener(startButton, "click", (e) => {
-        goFullScreen();
+        e.stopPropagation();
+        // Show version selector instead of going directly to fullscreen
+        if (window.EJS_VersionSelector) {
+          window.EJS_VersionSelector.show('start');
+        } else {
+          goFullScreen();
+        }
       });
     }
   }
@@ -94,6 +110,17 @@ EJS_onGameStart = async function(emulator) {
         delete window.EJS_startNewGame;
         return;
       }
+      
+      // Get the current profile from the version selector or multi-save manager
+      let currentProfile = 'default';
+      if (window.EJS_VersionSelector && window.EJS_VersionSelector.getSelectedVersion()) {
+        currentProfile = window.EJS_VersionSelector.getSelectedVersion().profileName;
+      } else if (window.EJS_MultiSaveStateManager) {
+        currentProfile = window.EJS_MultiSaveStateManager.getCurrentProfile();
+      }
+      
+      console.log(`Loading save state for profile: ${currentProfile}`);
+      
       const state = await window.EJS_emulator.storage.states.get(saveName);
       if (state) {
         console.log("Save state found, attempting to restore...");
@@ -131,6 +158,15 @@ async function saveState() {
   const called = window.EJS_emulator.callEvent("saveState", { state: state });
   if (called > 0) return;
   if (window.EJS_emulator.saveInBrowserSupported()) {
+    // Get the current profile for saving
+    let currentProfile = 'default';
+    if (window.EJS_VersionSelector && window.EJS_VersionSelector.getSelectedVersion()) {
+      currentProfile = window.EJS_VersionSelector.getSelectedVersion().profileName;
+    } else if (window.EJS_MultiSaveStateManager) {
+      currentProfile = window.EJS_MultiSaveStateManager.getCurrentProfile();
+    }
+    
+    console.log(`Saving game state to profile: ${currentProfile}`);
     await window.EJS_emulator.storage.states.put(window.EJS_emulator.getBaseFileName() + ".state", state);
     console.log('Game state saved to browser');
   }
