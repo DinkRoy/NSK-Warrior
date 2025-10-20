@@ -262,7 +262,7 @@ class MultiSaveStateManager {
      */
     addUI() {
         // Load CSS
-        this.loadCSS();
+        // this.loadCSS();
 
         // Create the UI container
         const uiContainer = document.createElement('div');
