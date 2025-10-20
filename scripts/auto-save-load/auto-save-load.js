@@ -3,18 +3,28 @@ const createNewButton = () => {
   const newButton = window.EJS_emulator.createElement("div");
   newButton.classList.add("ejs_new_button");
   newButton.innerText = "New Game";
+  newButton.setAttribute('data-our-listener', 'true');
   window.EJS_emulator.elements.parent.appendChild(newButton);
-  window.EJS_emulator.addEventListener(newButton, "touchstart", () => {
+  
+  newButton.addEventListener("touchstart", () => {
     window.EJS_emulator.touch = true;
   });
-  window.EJS_emulator.addEventListener(newButton, "click", async (e) => {
+  
+  newButton.addEventListener("click", async (e) => {
+    e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    console.log('New Game button clicked');
+    
     let result = confirm("Are you sure? This deletes your save.");
     if (result) {
       // Show version selector instead of going directly to fullscreen
       if (window.EJS_VersionSelector) {
+        console.log('Showing version selector for new game');
         window.EJS_VersionSelector.show('new');
       } else {
+        console.log('Version selector not available, falling back to direct new game');
         window.EJS_startNewGame = true;
         window.EJS_emulator.startButtonClicked.bind(window.EJS_emulator)(e);
         document.querySelector('.ejs_start_button').remove();
@@ -42,33 +52,108 @@ const observer = new MutationObserver((mutationsList, observer) => {
       startButton.style.paddingLeft = "30px";
       startButton.style.paddingRight = "30px";
       createNewButton();
-      startButton.addEventListener("click", (e) => {
+      
+      // Completely replace the button to remove all event listeners
+      const newStartButton = startButton.cloneNode(true);
+      startButton.parentNode.replaceChild(newStartButton, startButton);
+      
+      // Add our custom event listeners
+      newStartButton.addEventListener("click", (e) => {
+        e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        console.log('Continue button clicked - showing version selector');
+        
         // Show version selector instead of going directly to fullscreen
         if (window.EJS_VersionSelector) {
           window.EJS_VersionSelector.show('continue');
         } else {
-          startButton.remove();
+          console.log('Version selector not available, falling back to direct continue');
+          newStartButton.remove();
           document.querySelector('.ejs_new_button')?.remove();
           goFullScreen();
         }
       });
     } else {
       document.querySelector('.ejs_start_button').innerText = "Start Game";
-      window.EJS_emulator.addEventListener(startButton, "touchstart", (e) => {
+      
+      // Completely replace the button to remove all event listeners
+      const newStartButton = startButton.cloneNode(true);
+      startButton.parentNode.replaceChild(newStartButton, startButton);
+      
+      // Add our custom event listeners
+      newStartButton.addEventListener("touchstart", (e) => {
         e.stopPropagation();
         window.EJS_emulator.touch = true;
       });
-      window.EJS_emulator.addEventListener(startButton, "click", (e) => {
+      
+      newStartButton.addEventListener("click", (e) => {
+        e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        console.log('Start Game button clicked - showing version selector');
+        
         // Show version selector instead of going directly to fullscreen
         if (window.EJS_VersionSelector) {
           window.EJS_VersionSelector.show('start');
         } else {
+          console.log('Version selector not available, falling back to direct start');
           goFullScreen();
         }
       });
     }
+    
+    // Set up a periodic check to re-apply our event listeners if EmulatorJS overrides them
+    const checkInterval = setInterval(() => {
+      const currentButton = document.querySelector('.ejs_start_button');
+      if (currentButton && !currentButton.hasAttribute('data-our-listener')) {
+        console.log('Detected button override, re-applying our listeners');
+        currentButton.setAttribute('data-our-listener', 'true');
+        
+        // Remove all existing listeners by cloning
+        const newButton = currentButton.cloneNode(true);
+        currentButton.parentNode.replaceChild(newButton, currentButton);
+        newButton.setAttribute('data-our-listener', 'true');
+        
+        // Re-add our listeners
+        if (localStorage.getItem('gameActive') === 'true') {
+          newButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Continue button clicked (re-applied) - showing version selector');
+            if (window.EJS_VersionSelector) {
+              window.EJS_VersionSelector.show('continue');
+            } else {
+              newButton.remove();
+              document.querySelector('.ejs_new_button')?.remove();
+              goFullScreen();
+            }
+          });
+        } else {
+          newButton.addEventListener("touchstart", (e) => {
+            e.stopPropagation();
+            window.EJS_emulator.touch = true;
+          });
+          newButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Start Game button clicked (re-applied) - showing version selector');
+            if (window.EJS_VersionSelector) {
+              window.EJS_VersionSelector.show('start');
+            } else {
+              goFullScreen();
+            }
+          });
+        }
+      }
+    }, 1000);
+    
+    // Stop checking after 30 seconds
+    setTimeout(() => clearInterval(checkInterval), 30000);
   }
 });
 observer.observe(document.body, { childList: true, subtree: true });

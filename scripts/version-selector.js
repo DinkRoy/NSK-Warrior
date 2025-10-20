@@ -165,6 +165,7 @@ class VersionSelector {
     selectVersion(version) {
         this.selectedVersion = version;
         console.log(`Selected version: ${version.name} (${version.profileName})`);
+        console.log(`Current action: ${this.currentAction}`);
         
         // Hide the selector
         this.hide();
@@ -220,8 +221,10 @@ class VersionSelector {
         console.log('Starting game with version:', this.selectedVersion.name);
         // Call the original start game function
         if (window.EJS_emulator && window.EJS_emulator.startButtonClicked) {
+            console.log('Calling startButtonClicked');
             window.EJS_emulator.startButtonClicked();
         }
+        console.log('Calling goFullScreen');
         goFullScreen();
     }
 
@@ -234,6 +237,7 @@ class VersionSelector {
         if (startButton) startButton.remove();
         if (newButton) newButton.remove();
         
+        // Call the original continue functionality
         goFullScreen();
     }
 
@@ -242,15 +246,17 @@ class VersionSelector {
         // Set the new game flag and proceed
         window.EJS_startNewGame = true;
         
-        if (window.EJS_emulator && window.EJS_emulator.startButtonClicked) {
-            window.EJS_emulator.startButtonClicked();
-        }
-        
+        // Remove the buttons first
         const startButton = document.querySelector('.ejs_start_button');
         const newButton = document.querySelector('.ejs_new_button');
         
         if (startButton) startButton.remove();
         if (newButton) newButton.remove();
+        
+        // Call the original start functionality
+        if (window.EJS_emulator && window.EJS_emulator.startButtonClicked) {
+            window.EJS_emulator.startButtonClicked();
+        }
         
         goFullScreen();
     }

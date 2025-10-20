@@ -55,6 +55,7 @@
         }
     </style>
     <link rel="stylesheet" href="/scripts/version-selector.css">
+    <script src="/scripts/debug-event-listeners.js"></script>
 </head>
 <body>
     <div class="container">
@@ -68,6 +69,8 @@
             <button class="test-button" onclick="testContinueGame()">Test Continue Game</button>
             <button class="test-button" onclick="testNewGame()">Test New Game</button>
             <button class="test-button" onclick="testHide()">Hide Selector</button>
+            <button class="test-button" onclick="testDebug()">Debug Event Listeners</button>
+            <button class="test-button" onclick="testSimulateButtons()">Simulate Real Buttons</button>
             
             <div class="status" id="status">
                 Status: Ready to test
@@ -161,6 +164,59 @@
             } else {
                 updateStatus('Version Selector not loaded yet');
             }
+        }
+
+        function testDebug() {
+            if (window.debugEventListeners) {
+                window.debugEventListeners();
+                updateStatus('Debug information logged to console');
+            } else {
+                updateStatus('Debug script not loaded');
+            }
+        }
+
+        function testSimulateButtons() {
+            // Create mock buttons to test the actual event handling
+            const mockStartButton = document.createElement('div');
+            mockStartButton.className = 'ejs_start_button';
+            mockStartButton.innerText = 'Start Game';
+            mockStartButton.style.cssText = `
+                position: fixed;
+                bottom: 65px;
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: pointer;
+                background: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+            `;
+            
+            // Add the same event listeners as the real buttons
+            mockStartButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                console.log('Mock Start Game button clicked - showing version selector');
+                
+                if (window.EJS_VersionSelector) {
+                    window.EJS_VersionSelector.show('start');
+                } else {
+                    console.log('Version selector not available, falling back to direct start');
+                }
+            });
+            
+            document.body.appendChild(mockStartButton);
+            updateStatus('Mock Start Game button created - click it to test');
+            
+            // Remove after 10 seconds
+            setTimeout(() => {
+                if (mockStartButton.parentNode) {
+                    mockStartButton.parentNode.removeChild(mockStartButton);
+                }
+            }, 10000);
         }
 
         function updateStatus(message) {
