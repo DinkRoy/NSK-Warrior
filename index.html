@@ -46,6 +46,20 @@
       z-index: 1;
       touch-action: none;
     }
+
+    :popover-open {
+      max-width: 700px;
+      bottom: 50%;
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.3);
+      text-align: center;
+      color: white;
+      font-size: 1.1em;
+      font-family: system-ui;
+      padding: 0px 10px;
+     }
   </style>
   <script src="/app.js"></script>
 </head>
@@ -62,6 +76,10 @@
       <!-- Pages added here from script -->
     </div>
     <div id="game"></div>
+  </div>
+  <div id="myMessage" popover>
+      <h3>Testers:</h3>
+      <p>For the most updated content select "New Game"</p>
   </div>
   <audio id="flip" src="booklet/sounds/page_turn.mp3"></audio>
   <audio id="slide1" src="booklet/sounds/slide_in.mp3"></audio>
@@ -88,6 +106,13 @@
     EJS_defaultOptions = {
       'save-state-location': 'browser'
     };
+  </script>
+  <script>
+    window.addEventListener('load', () => {
+      if (myMessage.popover === 'auto' || myPopover.popover === 'manual') {
+        myMessage.togglePopover();
+      }
+    });
   </script>
   <script src="/scripts/gamepad.js"></script>
   <script src="/scripts/auto-save-load/auto-save-load.js"></script>
