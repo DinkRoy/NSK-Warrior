@@ -1,12 +1,9 @@
-const APP_CACHE = 'nsk-warrior-cache-v94';
+const APP_CACHE = 'nsk-warrior-cache-v95';
 const networkFirstFiles = [
     '/',
     '/index.html',
     '/app.js',
-    '/manifest.json',
-    '/scripts/auto-save-load/auto-save-load.js',
-    '/scripts/auto-save-load/auto-save-load.css',
-    '/scripts/gamepad.js'
+    '/manifest.json'
 ];
 const urlsToCache = [
     '/',
