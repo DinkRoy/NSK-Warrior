@@ -129,19 +129,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 const bWrapper = document.getElementById('button-wrapper');
+
 // Detect browser back button event and trigger togglebutton or save game state
 window.addEventListener('popstate', (event) => {
     // Get the state we just navigated to
     const state = event.state;
 
+    // --- 1. HANDLE FORWARD NAVIGATION ---
     if (state && state.bookOpen) {
         // STATE: #booklet
-        // This happens if the user clicks "Forward" back to the booklet.
-        // We need to OPEN the booklet.
+        // User clicked "Forward" back to the booklet. Open it.
         if (!toggleButton.checked) {
-            toggleButton.checked = true; // Sync the checkbox
+            toggleButton.checked = true; 
             
-            // Run all your booklet OPENING animations
+            // Open animations
             document.getElementById("slide1").play();
             blurBackground.style.display = 'block';
             bWrapper.style.animationPlayState = 'paused';
@@ -151,12 +152,11 @@ window.addEventListener('popstate', (event) => {
 
     } else if (state && state.gameStart) {
         // STATE: #game
-        // This happens if the user clicks "Forward" back into the game.
-        // We just need to make sure the booklet is closed.
+        // User clicked "Forward" back to the game. Ensure booklet is closed.
         if (toggleButton.checked) {
-            toggleButton.checked = false; // Sync the checkbox
+            toggleButton.checked = false; 
             
-            // Run all your booklet CLOSING animations
+            // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
             book.style.animation = 'rollOut 0.7s ease forwards';
@@ -165,30 +165,37 @@ window.addEventListener('popstate', (event) => {
         }
 
     } else {
-        // STATE: original.html (state is null or undefined)
-        // This is the "base" page. This code runs when the user
-        // clicks "Back" from either #booklet or #game.
+        // --- 2. HANDLE BACK NAVIGATION (BASE STATE) ---
+        // state is null/undefined. 
 
-        // 1. If the booklet is open, close it.
+        // PRIORITY 1: If the booklet is currently Open, ONLY close the booklet.
         if (toggleButton.checked) {
-            toggleButton.checked = false; // Sync the checkbox
+            toggleButton.checked = false; 
             
-            // Run all your booklet CLOSING animations
+            // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
             book.style.animation = 'rollOut 0.7s ease forwards';
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
+            
+            // We return here so we DO NOT trigger the saveState logic below.
+            return; 
         }
 
-        // 2. Save the game (if it was running)
-        // We check for window.EJS_emulator to see if the game was ever started.
-        if (window.EJS_emulator) {
-            console.log('Back navigation to base page detected, saving game state.');
-            saveState(); // Calls the global function
+        // PRIORITY 2: If booklet was closed, but game is running, ONLY save state.
+        // We check window.EJS_emulator to confirm the game was actually active.
+        else if (window.EJS_emulator) {
+            console.log('Back navigation detected while game active. Saving state.');
+            saveState(); 
         }
+        
+        // PRIORITY 3: Else -> Do nothing. 
+        // The browser has already updated the URL to the base page. 
+        // Since no conditions matched, we just let the user pass through.
     }
 });
+
 
 // Show manual button on page click
 function restartButtonAnimation() {
