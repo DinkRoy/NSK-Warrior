@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#800000">
+  <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS. Select game save.">
+  <title>NSK Warrior KF Save Selector</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/images/192x192.png">
+  <link rel="icon" href="/favicon.ico">
+  
+  <style>
+    body,
+    html {
+      height: 100%;
+      background-color: black;
+      color: white;
+    }
+    
+    body {
+      margin: 0;
+      overflow: hidden;
+      padding-top: env(safe-area-inset-top);
+    }
+    
+    .container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      padding-top: 2em;
+      box-sizing: border-box;
+    }
+    
+    h1 {
+      font-family: Avenir, "Avenir Next", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+      font-size: 20px;
+      line-height: 45px;
+      text-transform: uppercase;
+      font-weight: bolder;
+    }
+    
+    .button_container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+      width: 100%;
+      max-width: 100vw;
+      gap: 20px;
+    }
+    
+    .save-slot {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 180px;
+      max-width: 50%;
+    }
+    
+    img {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    
+    .timestamp {
+      position: absolute;
+      bottom: 65px;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-family: sans-serif;
+      font-size: 12px;
+      text-align: center;
+      padding: 4px 0;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      pointer-events: none;
+    }
+    
+    .select_button {
+      position: relative;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      box-sizing: inherit;
+      display: flex;
+      justify-content: center;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+      font-size: 20px;
+      line-height: 45px;
+      text-transform: uppercase;
+      font-weight: bolder;
+      margin: .5em;
+      text-decoration: none;
+      width: fit-content;
+      padding-left: 30px;
+      padding-right: 30px;
+      white-space: nowrap;
+      height: 45px;
+      border: 0;
+      color: #fff !important;
+      border-radius: 35px;
+      text-align: center;
+      background-color: #800000;
+      box-shadow: 0 0 0 0 #222, 0 0px 0px 0 #111, inset 0 0px 0px 0 rgba(250, 250, 250, 0.2), inset 0 0px 0px 0px rgba(0, 0, 0, 0.5);
+    }
+    
+    .select_button_border {
+      border: 0.5px solid #333;
+    }
+    
+    .select_button:active,
+    .select_button:hover {
+      animation: select_button_pulse 2s infinite;
+    }
+    
+    @keyframes select_button_pulse {
+      50% {
+        box-shadow: 0 0 0 0 #222, 0 3px 7px 0 #111, inset 0 1px 1px 0 rgba(250, 250, 250, 0.2), inset 0 0px 15px 1px rgba(0, 0, 0, 0.5);
+      }
+      
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 #222, 0 0px 0px 0 #111, inset 0 0px 0px 0 rgba(250, 250, 250, 0.2), inset 0 0px 0px 0px rgba(0, 0, 0, 0.5);
+      }
+    }
+  </style>
+  
+</head>
+
+<body>
+  
+  <script src="../../scripts/screenshot-handler.js"></script>
+  
+  <script>
+    const saveSlots = [
+      { key: "NSK_WARRIOR_KF_1", imgId: "slot-1-img", timeId: "slot-1-time" },
+      { key: "NSK_WARRIOR_KF_2", imgId: "slot-2-img", timeId: "slot-2-time" },
+      { key: "NSK_WARRIOR_KF_3", imgId: "slot-3-img", timeId: "slot-3-time" },
+      { key: "NSK_WARRIOR_KF_4", imgId: "slot-4-img", timeId: "slot-4-time" },
+    ];
+    
+    let activeObjectUrls = [];
+    
+    async function loadAllScreenshots() {
+      activeObjectUrls.forEach(url => URL.revokeObjectURL(url));
+      activeObjectUrls = [];
+      
+      for (const slot of saveSlots) {
+        const imgElement = document.getElementById(slot.imgId);
+        const timeElement = document.getElementById(slot.timeId);
+        
+        if (!imgElement) continue;
+        
+        try {
+          const record = await loadScreenshot(slot.key);
+          
+          let blob = null;
+          let timestamp = null;
+          
+          if (record instanceof Blob) {
+            // Handle old format (just a blob, no time)
+            blob = record;
+          } else if (record && record.image) {
+            // Handle new format
+            blob = record.image;
+            timestamp = record.created;
+          }
+          
+          if (blob) {
+            const imageUrl = URL.createObjectURL(blob);
+            activeObjectUrls.push(imageUrl);
+            imgElement.src = imageUrl;
+            
+            if (timestamp && timeElement) {
+              timeElement.textContent = timestamp;
+            }
+          } else {
+            imgElement.src = "../../images/save-placeholder.png";
+          }
+          
+        } catch (error) {
+          console.error(`Error loading slot ${slot.key}:`, error);
+          imgElement.src = "../../images/save-placeholder.png";
+          if (timeElement) timeElement.innerText = "ERROR!";
+        }
+      }
+    };
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      loadAllScreenshots();
+    });
+    
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) {
+        console.log("Page restored from bfcache. Forcing screenshot refresh.");
+        loadAllScreenshots();
+      }
+    });
+    
+    window.addEventListener("beforeunload", () => {
+      activeObjectUrls.forEach(url => URL.revokeObjectURL(url));
+    });
+  </script>
+  <div class="container" id="container">
+    <h1>keen fine edition</h1>
+    <div class="button_container">
+      <div class="save-slot">
+        <img id="slot-1-img" src="../../images/save-placeholder.png">
+        <span id="slot-1-time" class="timestamp">EMPTY</span>
+        <button class="select_button" id="slot-1" onclick="window.location.href='/versions/keen-fine/keen-fine-save-1.html';">save slot 1</button>
+      </div>
+      
+      <div class="save-slot">
+        <img id="slot-2-img" src="../../images/save-placeholder.png">
+        <span id="slot-2-time" class="timestamp">EMPTY</span>
+        <button class="select_button" id="slot-2" onclick="window.location.href='/versions/keen-fine/keen-fine-save-2.html';">save slot 2</button>
+      </div>
+      
+      <div class="save-slot">
+        <img id="slot-3-img" src="../../images/save-placeholder.png">
+        <span id="slot-3-time" class="timestamp">EMPTY</span>
+        <button class="select_button" id="slot-3" onclick="window.location.href='/versions/keen-fine/keen-fine-save-3.html';">save slot 3</button>
+      </div>
+      
+      <div class="save-slot">
+        <img id="slot-4-img" src="../../images/save-placeholder.png">
+        <span id="slot-4-time" class="timestamp">EMPTY</span>
+        <button class="select_button" id="slot-4" onclick="window.location.href='/versions/keen-fine/keen-fine-save-4.html';">save slot 4</button>
+      </div>
+    </div>
+  </div>
+  
+</body>
+
+</html>

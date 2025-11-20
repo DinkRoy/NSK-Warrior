@@ -1,22 +1,63 @@
+.button-wrapper {
+  position: fixed;
+  z-index: 3;
+  top: 10px;
+  left: -80px; /* Initial off-screen position */
+  animation: slide-in-wait-out 4s ease-in-out forwards 2s;
+}
+
 .toggle-button {
-  display: none;
+  display: none; /* Hides the checkbox */
 }
 
 .toggle-button + label {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 3;
+  display: block;
   background: none;
   border: none;
   cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
   border-radius: 50%;
   background-color: #800000;
   color: white;
   padding: 8px 10px;
   font-size: 16px;
   transition: background-color 0.3s, transform 0.3s;
-  animation: hideButton 2s, slideIn .3s 2s;
+}
+
+.toggle-button + label:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.toggle-button + label:focus-visible {
+  outline: 2px solid #fff; /* optional for accessibility */
+}
+
+/* button animations (May need to change translateX to translat3d so browser renders button on top) */
+@keyframes slide-in-wait-out {
+  /* Total duration = 4.0s */
+  0% {
+    transform: translateX(0);
+  }
+  12.5% {
+    transform: translateX(90px); /* 0.5s to slide in */
+  }
+  87.5% {
+    transform: translateX(90px); /* 3.0s to wait */
+  }
+  100% {
+    transform: translateX(0); /* 0.5s to slide out */
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(90px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .toggle-button + label img {
@@ -39,38 +80,10 @@
   transform: scale(1.1);
 }
 
-.toggle-button:checked ~ #book {
+#toggle-button:checked ~ #book {
   left: 0;
   animation: rollIn;
   animation-duration: 0.7s;
-}
-
-@keyframes slideIn {
-  0% {
-  transform: translateX(-80px);
-  }
-  100% {
-  transform: translateX(0);
-  }
-}
-
-.slideIn {
-  animation-name: slideIn;
-}
-
-@keyframes hideButton {
-  0% {
-  opacity: 0;       
-  transform: translateX(0);
-  }
-  100% {
-  opacity: 0;        
-  transform: translateX(-80px);
-  }
-}
-
-.hideButton {
-  animation-name: hideButton;
 }
 
 #book {
@@ -81,8 +94,6 @@
   left: -2200px;
   transition: margin-left 0.2s ease-in-out, left 0.6s ease !important;
   -webkit-transition: margin-left 0.2s ease-in-out, left 0.6s ease !important;
-  animation-name: rollOut;
-  animation-duration: 0.7s;
 }
 
 @keyframes rollIn {

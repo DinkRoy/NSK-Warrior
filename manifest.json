@@ -75,12 +75,6 @@
             "sizes": "1317x1080",
             "type": "image/png",
             "label": "Huh?"
-        },
-        {
-            "src": "images/title_screen.png",
-            "sizes": "1080x886",
-            "type": "image/png",
-            "label": "A screenshot of the game title"
         }
     ]
 }
