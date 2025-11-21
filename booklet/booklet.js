@@ -123,7 +123,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             book.style.animation = 'rollOut 0.7s ease forwards';
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
-            
         }
     });
 });
@@ -132,16 +131,12 @@ const bWrapper = document.getElementById('button-wrapper');
 
 // Detect browser back button event and trigger togglebutton or save game state
 window.addEventListener('popstate', (event) => {
-    // Get the state we just navigated to
     const state = event.state;
 
-    // --- 1. HANDLE FORWARD NAVIGATION ---
     if (state && state.bookOpen) {
         // STATE: #booklet
-        // User clicked "Forward" back to the booklet. Open it.
         if (!toggleButton.checked) {
             toggleButton.checked = true; 
-            
             // Open animations
             document.getElementById("slide1").play();
             blurBackground.style.display = 'block';
@@ -152,10 +147,8 @@ window.addEventListener('popstate', (event) => {
 
     } else if (state && state.gameStart) {
         // STATE: #game
-        // User clicked "Forward" back to the game. Ensure booklet is closed.
         if (toggleButton.checked) {
             toggleButton.checked = false; 
-            
             // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
@@ -165,37 +158,23 @@ window.addEventListener('popstate', (event) => {
         }
 
     } else {
-        // --- 2. HANDLE BACK NAVIGATION (BASE STATE) ---
-        // state is null/undefined. 
-
-        // PRIORITY 1: If the booklet is currently Open, ONLY close the booklet.
         if (toggleButton.checked) {
             toggleButton.checked = false; 
-            
             // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
             book.style.animation = 'rollOut 0.7s ease forwards';
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
-            
-            // We return here so we DO NOT trigger the saveState logic below.
             return; 
+            
         }
-
-        // PRIORITY 2: If booklet was closed, but game is running, ONLY save state.
-        // We check window.EJS_emulator to confirm the game was actually active.
         else if (window.EJS_emulator) {
             console.log('Back navigation detected while game active. Saving state.');
             saveState(); 
         }
-        
-        // PRIORITY 3: Else -> Do nothing. 
-        // The browser has already updated the URL to the base page. 
-        // Since no conditions matched, we just let the user pass through.
     }
 });
-
 
 // Show manual button on page click
 function restartButtonAnimation() {
