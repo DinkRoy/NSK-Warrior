@@ -81,7 +81,9 @@
     EJS_biosUrl = "https://nsk-warrior-files.netlify.app/scph5501.bin";
     EJS_loadStateURL = "RPG Maker (USA).state";
     // EJS_DEBUG_XX = true;
-    EJS_threads = true;
+    EJS_threads = (window.self === window.top);     
+    console.log("Running in iframe?", window.self !== window.top);     
+    console.log("Threads enabled?", EJS_threads);
     EJS_Buttons = {
       restart: false
     };
