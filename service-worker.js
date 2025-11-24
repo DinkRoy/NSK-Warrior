@@ -10,7 +10,7 @@ const networkFirstFiles = [
 ];
 const urlsToCache = [
     '/',
-    'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
+    '/images/title.avif',
     '/booklet/booklet.css',
     '/booklet/booklet.js',
     '/booklet/jquery-3.7.1.min.js',
@@ -40,7 +40,7 @@ const urlsToCache = [
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
     '/booklet/pages/20.webp',
-    '/RPG Maker (USA).zip'
+    'https://nsk-warrior-files.netlify.app/RPG Maker (USA).zip'
 ];
 
 self.addEventListener('install', event => {
