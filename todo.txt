@@ -1,0 +1,12 @@
+
+Back button on game pages
+- Exit emulator function 
+
+
+Delete save button on save selectors
+
+
+Local First sync with Google, Dropbox etc...
+
+Important Cases:
+- user switches devices

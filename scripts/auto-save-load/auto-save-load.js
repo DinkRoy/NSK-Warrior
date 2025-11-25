@@ -180,7 +180,7 @@ function displayIcon(icon) {
     
     const s = emulator.iconElem.style;
     s.position = "absolute";
-    s.top = "12em";
+    s.top = "50%";
     s.left = "50%";
     s.transform = "translate(-50%, -50%)"; // Centers the div perfectly
     s.zIndex = "1000";                     // Ensures it sits on top

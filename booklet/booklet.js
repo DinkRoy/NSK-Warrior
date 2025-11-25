@@ -132,11 +132,11 @@ const bWrapper = document.getElementById('button-wrapper');
 // Detect browser back button event and trigger togglebutton or save game state
 window.addEventListener('popstate', (event) => {
     const state = event.state;
-
+    
     if (state && state.bookOpen) {
         // STATE: #booklet
         if (!toggleButton.checked) {
-            toggleButton.checked = true; 
+            toggleButton.checked = true;
             // Open animations
             document.getElementById("slide1").play();
             blurBackground.style.display = 'block';
@@ -144,11 +144,11 @@ window.addEventListener('popstate', (event) => {
             book.style.left = '0';
             book.style.animation = 'rollIn 0.7s ease forwards';
         }
-
+        
     } else if (state && state.gameStart) {
         // STATE: #game
         if (toggleButton.checked) {
-            toggleButton.checked = false; 
+            toggleButton.checked = false;
             // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
@@ -156,22 +156,22 @@ window.addEventListener('popstate', (event) => {
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
         }
-
+        
     } else {
         if (toggleButton.checked) {
-            toggleButton.checked = false; 
+            toggleButton.checked = false;
             // Close animations
             bWrapper.style.animationPlayState = 'running';
             book.style.left = '-2200px';
             book.style.animation = 'rollOut 0.7s ease forwards';
             document.getElementById("slide2").play();
             blurBackground.style.display = 'none';
-            return; 
+            return;
             
         }
         else if (window.EJS_emulator) {
             console.log('Back navigation detected while game active. Saving state.');
-            saveState(); 
+            saveState();
         }
     }
 });
@@ -189,6 +189,9 @@ bWrapper.addEventListener('animationend', () => {
 });
 
 document.body.addEventListener('click', () => {
+    if (event.target.closest('.ejs_context_menu') || event.target.closest('.ejs_menu_bar')) {
+        return;
+    }
     const isPaused = getComputedStyle(bWrapper).animationPlayState === 'paused';
     if (!isButtonAnimating && !isPaused) {
         isButtonAnimating = true;
