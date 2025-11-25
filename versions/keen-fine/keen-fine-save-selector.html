@@ -155,6 +155,23 @@
       { key: "NSK_WARRIOR_KF_4", imgId: "slot-4-img", timeId: "slot-4-time" },
     ];
     
+    function checkSaveStateExists(keyName) {
+      return new Promise((resolve) => {
+        const request = indexedDB.open('EmulatorJS-states');
+        request.onerror = () => resolve(false);
+        request.onsuccess = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('states')) return resolve(false);
+          const tx = db.transaction(['states'], 'readonly');
+          const store = tx.objectStore('states');
+          // Add .state extension because the keys in saveSlots don't have it
+          const countReq = store.count(keyName + ".state");
+          countReq.onsuccess = () => resolve(countReq.result > 0);
+          countReq.onerror = () => resolve(false);
+        };
+      });
+    }
+    
     let activeObjectUrls = [];
     
     async function loadAllScreenshots() {
@@ -174,15 +191,14 @@
           let timestamp = null;
           
           if (record instanceof Blob) {
-            // Handle old format (just a blob, no time)
             blob = record;
           } else if (record && record.image) {
-            // Handle new format
             blob = record.image;
             timestamp = record.created;
           }
           
           if (blob) {
+            // CASE 1: Normal Screenshot Exists
             const imageUrl = URL.createObjectURL(blob);
             activeObjectUrls.push(imageUrl);
             imgElement.src = imageUrl;
@@ -191,7 +207,14 @@
               timeElement.textContent = timestamp;
             }
           } else {
+            // CASE 2: No screenshot, but check if it's a LEGACY SAVE
             imgElement.src = "../../images/save-placeholder.png";
+            
+            // Perform backup check
+            const exists = await checkSaveStateExists(slot.key);
+            if (exists && timeElement) {
+              timeElement.innerText = "LEGACY SAVE";
+            }
           }
           
         } catch (error) {
@@ -217,6 +240,7 @@
       activeObjectUrls.forEach(url => URL.revokeObjectURL(url));
     });
   </script>
+  
   <div class="container" id="container">
     <h1>keen fine edition</h1>
     <div class="button_container">
@@ -247,155 +271,125 @@
   </div>
   
   <script>
-  (async function initMigration() {
-    
-    const DB_NAME = 'EmulatorJS-states'; 
-    const STORE_NAME = 'states';
-    const KEYS_LIST_ID = '?EJS_KEYS!'; 
-    
-    const TARGET_PREFIX = 'NSK_WARRIOR_KF'; 
-    const LEGACY_SAVES = [
-      'NSK WARRIOR KF.state' 
-    ];
-
-    // Helper: Open DB
-    const openDB = () => {
-      return new Promise((resolve) => {
-        const req = indexedDB.open(DB_NAME);
-        req.onerror = () => resolve(null); // Fail silently if DB doesn't exist
-        req.onsuccess = () => resolve(req.result);
-      });
-    };
-
-    // Helper: Get data (Generic)
-    const getData = (db, key) => {
-      return new Promise((resolve) => {
-        const tx = db.transaction([STORE_NAME], 'readonly');
-        const req = tx.objectStore(STORE_NAME).get(key);
-        req.onsuccess = () => resolve(req.result !== undefined ? req.result : null);
-        req.onerror = () => resolve(null);
-      });
-    };
-
-    try {
-      const db = await openDB();
-      // Verify DB and Store exist
-      if (!db || !db.objectStoreNames.contains(STORE_NAME)) {
-          console.log(`Database ${DB_NAME} or store ${STORE_NAME} not found.`);
-          return;
-      }
-
-      // 1. Find a legacy file
-      let legacyData = null;
-      let legacyName = null;
-
-      for (const oldName of LEGACY_SAVES) {
-        const data = await getData(db, oldName);
-        if (data) {
-          legacyData = data;
-          legacyName = oldName;
-          console.log("Found legacy save:", legacyName);
-          break; 
+    (async function initMigration() {
+      
+      const DB_NAME = 'EmulatorJS-states';
+      const STORE_NAME = 'states';
+      const KEYS_LIST_ID = '?EJS_KEYS!';
+      
+      const TARGET_PREFIX = 'NSK_WARRIOR_KF';
+      const LEGACY_SAVES = [
+        'NSK WARRIOR KF.state'
+      ];
+      
+      const openDB = () => {
+        return new Promise((resolve) => {
+          const req = indexedDB.open(DB_NAME);
+          req.onerror = () => resolve(null);
+          req.onsuccess = () => resolve(req.result);
+        });
+      };
+      
+      const getData = (db, key) => {
+        return new Promise((resolve) => {
+          const tx = db.transaction([STORE_NAME], 'readonly');
+          const req = tx.objectStore(STORE_NAME).get(key);
+          req.onsuccess = () => resolve(req.result !== undefined ? req.result : null);
+          req.onerror = () => resolve(null);
+        });
+      };
+      
+      try {
+        const db = await openDB();
+        if (!db || !db.objectStoreNames.contains(STORE_NAME)) return;
+        
+        let legacyData = null;
+        let legacyName = null;
+        
+        for (const oldName of LEGACY_SAVES) {
+          const data = await getData(db, oldName);
+          if (data) {
+            legacyData = data;
+            legacyName = oldName;
+            console.log("Found legacy save:", legacyName);
+            break;
+          }
         }
-      }
-
-      if (!legacyData) return; // No old saves found, exit.
-
-      // 2. Find the first EMPTY slot in the new system (1-4)
-      let targetSlot = null;
-      let targetKey = null;
-
-      for (let i = 1; i <= 4; i++) {
-        const key = `${TARGET_PREFIX}_${i}.state`;
-        const existingData = await getData(db, key);
-        if (!existingData) {
-          targetSlot = i;
-          targetKey = key;
-          break; // Found empty slot
+        
+        if (!legacyData) return;
+        
+        let targetSlot = null;
+        let targetKey = null;
+        
+        for (let i = 1; i <= 4; i++) {
+          const key = `${TARGET_PREFIX}_${i}.state`;
+          const existingData = await getData(db, key);
+          if (!existingData) {
+            targetSlot = i;
+            targetKey = key;
+            break;
+          }
         }
-      }
-
-      // 3. Update UI
-      if (targetSlot && legacyData) {
-        const btnId = `slot-${targetSlot}`;
-        const btn = document.getElementById(btnId);
-        const time = document.getElementById(`${btnId}-time`);
-
-        if (btn) {
-          // Visuals
-          btn.innerText = "IMPORT OLD SAVE";
-          btn.style.backgroundColor = "#d35400"; 
-          btn.style.border = "2px solid white";
-          btn.style.animation = "select_button_pulse 1s infinite"; // Faster pulse
+        
+        if (targetSlot && legacyData) {
+          const btnId = `slot-${targetSlot}`;
+          const btn = document.getElementById(btnId);
+          const time = document.getElementById(`${btnId}-time`);
           
-          if(time) time.innerText = "Legacy Save Found";
-
-          // Action
-          btn.onclick = async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if(!confirm(`Found old save: "${legacyName}".\nImport it to Slot ${targetSlot}?`)) return;
-
-            const tx = db.transaction([STORE_NAME], 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-
-            // A. Get Master Key List
-            const keysReq = store.get(KEYS_LIST_ID);
+          if (btn) {
+            btn.innerText = "IMPORT SAVE";
+            btn.style.backgroundColor = "#d35400";
+            btn.style.border = "2px solid white";
+            btn.style.animation = "select_button_pulse 1s infinite";
             
-            keysReq.onsuccess = () => {
-              let keys = keysReq.result || [];
+            if (time) time.innerText = "Legacy Save Found";
+            
+            btn.onclick = async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
               
-              // B. Update Key List (Remove Old, Add New)
-              const oldIndex = keys.indexOf(legacyName);
-              if (oldIndex > -1) keys.splice(oldIndex, 1);
-              if (!keys.includes(targetKey)) keys.push(targetKey);
-
-              // C. Move .state File
-              store.put(keys, KEYS_LIST_ID); 
-              store.put(legacyData, targetKey); 
-              store.delete(legacyName); 
-
-              // D. Move Screenshot (.png)
-              // We assume screenshots live in the same store with .png appended
-              const oldScreenKey = legacyName + '.png';
-              const newScreenKey = targetKey + '.png';
+              if (!confirm(`Found old save: "${legacyName}".\nImport it to Slot ${targetSlot}?`)) return;
               
-              const screenReq = store.get(oldScreenKey);
-              screenReq.onsuccess = () => {
-                  if (screenReq.result) {
-                      store.put(screenReq.result, newScreenKey);
-                      store.delete(oldScreenKey);
-                      
-                      // Update keys list for screenshot
-                      if (!keys.includes(newScreenKey)) keys.push(newScreenKey);
-                      const scrIndex = keys.indexOf(oldScreenKey);
-                      if (scrIndex > -1) keys.splice(scrIndex, 1);
-                      store.put(keys, KEYS_LIST_ID); 
-                  }
+              const tx = db.transaction([STORE_NAME], 'readwrite');
+              const store = tx.objectStore(STORE_NAME);
+              
+              // A. Get Master Key List
+              const keysReq = store.get(KEYS_LIST_ID);
+              
+              keysReq.onsuccess = () => {
+                let keys = keysReq.result || [];
+                
+                // B. Update Key List
+                const oldIndex = keys.indexOf(legacyName);
+                if (oldIndex > -1) keys.splice(oldIndex, 1);
+                if (!keys.includes(targetKey)) keys.push(targetKey);
+                
+                // C. Move .state File
+                store.put(keys, KEYS_LIST_ID);
+                store.put(legacyData, targetKey);
+                store.delete(legacyName);
               };
+              
+              tx.oncomplete = () => {
+                alert("Save migrated successfully!");
+                window.location.reload();
+              };
+              
+              tx.onerror = (err) => {
+                console.error(err);
+                alert("Error importing save.");
+              }
             };
-
-            tx.oncomplete = () => {
-              alert("Save migrated successfully!");
-              window.location.reload();
-            };
-            
-            tx.onerror = (err) => {
-              console.error(err);
-              alert("Error importing save.");
-            }
-          };
+          }
         }
+        
+      } catch (err) {
+        console.error("Auto-migration check failed:", err);
       }
-
-    } catch (err) {
-      console.error("Auto-migration check failed:", err);
-    }
-
-  })();
-</script>
-
+      
+    })();
+  </script>
+  
 </body>
 
 </html>
