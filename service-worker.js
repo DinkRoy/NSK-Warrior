@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v105';
+const APP_CACHE = 'nsk-warrior-cache-v106';
 const networkFirstFiles = [
     '/',
     '/index.html',
@@ -7,7 +7,9 @@ const networkFirstFiles = [
     '/booklet/booklet.css',
     '/booklet/booklet.js',
     '/booklet/pages/2.webp',
-    '/versions/v1.1/v1-1-save-selector.html'
+    '/versions/v1.1/v1-1-save-selector.html',
+    '/versions/original/original-save-selector.html',
+    '/scripts/auto-save-load/auto-save-load.js'
 ];
 const urlsToCache = [
     '/',
