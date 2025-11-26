@@ -182,15 +182,15 @@ function displayIcon(icon) {
     s.position = "absolute";
     s.top = "50%";
     s.left = "50%";
-    s.transform = "translate(-50%, -50%)"; // Centers the div perfectly
-    s.zIndex = "1000";                     // Ensures it sits on top
-    s.width = "100px";                     // Set a reasonable size for the icon
+    s.transform = "translate(-50%, -50%)"; 
+    s.zIndex = "1000";                    
+    s.width = "100px";                    
     s.height = "100px";
-    s.color = "white";                     // Sets the SVG fill color (if using currentColor)
-    s.opacity = "0";                       // Start hidden
-    s.transition = "opacity 0.5s ease";    // The fade animation magic
-    s.pointerEvents = "none";              // Allows clicking 'through' the icon to the game
-    s.display = "flex";                    // Helps center the SVG inside the div
+    s.color = "white";                    
+    s.opacity = "0";              
+    s.transition = "opacity 0.5s ease"; 
+    s.pointerEvents = "none";         
+    s.display = "flex";   
     s.justifyContent = "center";
     s.alignItems = "center";
     
