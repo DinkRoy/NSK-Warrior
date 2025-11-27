@@ -296,6 +296,7 @@ EJS_onGameStart = async function(emulator) {
   
   window.onbeforeunload = (e) => {
     e.preventDefault();
+    window.history.pushState({ gameStart: true }, '', '#game');
     e.returnValue = '';
   };
 };

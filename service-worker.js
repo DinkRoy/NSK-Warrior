@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v108';
+const APP_CACHE = 'nsk-warrior-cache-v109';
 const networkFirstFiles = [
     '/',
     '/index.html',
