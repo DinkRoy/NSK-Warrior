@@ -28,6 +28,10 @@
     body {
       margin: 0;
       overflow: hidden;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      
+      
     }
     
     .container {
@@ -36,7 +40,6 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      max-height: 100dvh;
       width: 100vw;
       overflow: hidden;
     }
