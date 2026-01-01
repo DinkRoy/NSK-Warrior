@@ -6,6 +6,7 @@ const networkFirstFiles = [
     '/manifest.json',
     '/booklet/booklet.css',
     '/booklet/booklet.js',
+    '/booklet/pages/2.webp',
     '/spa-manager.js',
     '/versions/keen-fine/RPG Maker (USA).state'
 ];
