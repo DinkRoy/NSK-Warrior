@@ -2,144 +2,423 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#800000">
-  <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
-  <title>NSK Warrior KF</title>
-  <link rel="stylesheet" href="booklet/booklet.css">
-  <link rel="stylesheet" href="/scripts/auto-save-load/auto-save-load.css">
+  <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS. Select version.">
+  <title>NSK Warrior</title>
+  <link rel="stylesheet" href="/booklet/booklet.css">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/images/192x192.png">
+  <link rel="icon" href="/favicon.ico">
+  
   <style>
+    /* --- GLOBAL STYLES --- */
+    * {
+      box-sizing: border-box;
+    }
+    
     body,
     html {
-      height: 100%;
-      background-color: black;
-      color: white;
-    }
-    
-    body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      height: 100vh;
+      width: 100%;
+      background: #000;
+      color: white;
       overflow: hidden;
-      padding-top: env(safe-area-inset-top);
+      font-family: system-ui, sans-serif;
     }
     
-    .container {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .bg-layer {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 100vw;
+      z-index: 0;
+      opacity: 0.75;
+    }
+    
+    #game-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      box-sizing: border-box;
       width: 100%;
       height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-top: env(safe-area-inset-top);
+      z-index: 10;
       overflow: hidden;
     }
     
     #game {
-      position: absolute;
       width: 100%;
       height: 100%;
-      max-width: 100%;
+      display: block;
+      max-height: 100%;
+    }
+    
+    /* --- UI OVERLAY --- */
+    #ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    
+    /* --- BUTTON STYLES --- */
+    .select_button {
+      pointer-events: auto;
+      outline: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+      font-size: 1.2em;
+      line-height: 45px;
+      text-transform: uppercase;
+      font-weight: bolder;
+      margin: 10px;
+      padding: 0 1.2em;
+      white-space: nowrap;
+      height: auto;
+      border: 0;
+      color: #fff;
+      border-radius: 35px;
+      background-color: #800000;
+      box-shadow: 0 0 0 0 #222, inset 0 0 0 0 rgba(250, 250, 250, 0.2);
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .select_button:hover {
+      background-color: #a00000;
+      transform: scale(1.05);
+    }
+    
+    /* Play button pulse */
+    #start_button {
+      animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, start_button_pulse 2s infinite;
+    }
+    
+    /* --- MENUS --- */
+    #start-menu {
+      position: absolute;
+      bottom: -40px;
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    
+    /* --- FLEXIBLE MENU LAYOUT --- */
+    
+    .version-list-flex {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+    }
+    
+    .version-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      /* Anchor for the absolute dropdown (in landscape) */
+      width: auto;
+      /* Let it shrink/grow as needed */
+    }
+    
+    /* Top Menu container */
+    #version-menu {
+      position: absolute;
+      top: -100vh;
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-items: center;
+      align-items: center;
+      width: 100%;
+      max-width: 50vw;
+      transition: top 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    
+    /* --- SAVE SLOT DROPDOWN (HYBRID BEHAVIOR) --- */
+    
+    .save-slot-container {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 15px;
+      
+      pointer-events: auto;
+      position: relative;
+      /* Stays in flow, pushes buttons down */
+      margin: 0;
+      box-shadow: none;
+      transform: none;
       z-index: 1;
-      touch-action: none;
     }
-
-    :popover-open {
-      max-width: 700px;
-      bottom: 50%;
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+    
+    .save-slot-container.open {
+      max-height: 65vh;
+      opacity: 1;
+      padding: 10px;
+      border: 1px solid #444;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      overflow-y: auto;
+    }
+    
+    /* LANDSCAPE / DESKTOP OVERRIDE */
+    @media screen and (min-width: 600px) and (orientation: landscape) {
+      
+      #version-menu {
+        position: relative;
+        height: 100%;
+        max-width: 100vw;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-bottom: 60px;
+      }
+      
+      .save-slot-container {
+        position: absolute;
+        /* Float out of flow */
+        top: 100%;
+        /* Directly below button */
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .save-slot-container.open {
+        overflow-y: auto;
+      }
+      
+      #version-list-root {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        height: auto;
+      }
+    }
+    
+    .slot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0 5px 0;
+      border-bottom: 1px solid #444;
+    }
+    
+    .slot-row:last-child {
       border: none;
-      background-color: rgba(255, 255, 255, 0.3);
-      text-align: center;
-      color: white;
-      font-size: 1.1em;
-      font-family: system-ui;
-      padding: 10px 10px;
-     }
+    }
     
-    @keyframes pop-in {
+    .ejs_loading_text {
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px !important;
+    }
+    
+    #ejs-custom-exit span {
+      position: absolute;
+      height: 14px;
+      width: 25px;
+      font-size: 14px;
+    }
+    
+    /* Custom Modal Styles */
+    #custom-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    #custom-modal-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    #custom-modal,
+    #update-notification {
+      background: rgba(50, 0, 0, 0.9);
+      border: 1px solid #a00000;
+      border-radius: 20px;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    #custom-modal-overlay.visible #custom-modal {
+      transform: scale(1);
+    }
+    
+    .modal-btn,
+    #update-button {
+      background: #444;
+      color: white;
+      border: none;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 5px 0;
+    }
+    
+    .modal-btn.confirm {
+      background: #a00000;
+    }
+    
+    .modal-btn:hover {
+      filter: brightness(1.2);
+    }
+    
+    
+    /* --- ANIMATIONS --- */
+    
+    @keyframes slideUpFade {
       0% {
-        transform: scale(0);
         opacity: 0;
+        transform: translateY(0);
       }
-      80% {
-        transform: scale(1.05);
-        opacity: 1;
-      }
+      
       100% {
-        transform: scale(1);
         opacity: 1;
+        transform: translateY(-80px);
       }
     }
     
-    [popover]:popover-open {
-      animation: pop-in 0.3s ease-out forwards;
+    @keyframes start_button_pulse {
+      50% {
+        box-shadow: 0 0 0 0 #222, 0 3px 7px 0 #111, inset 0 1px 1px 0 rgba(250, 250, 250, 0.2), inset 0 0px 15px 1px rgba(0, 0, 0, 0.5);
+      }
+      
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 #222, 0 0px 0px 0 #111, inset 0 0px 0px 0 rgba(250, 250, 250, 0.2), inset 0 0px 0px 0px rgba(0, 0, 0, 0.5);
+      }
+    }
+    
+    .animate-enter {
+      animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    
+    .slide-out-down {
+      transform: translateY(200px);
+    }
+    
+    .slide-in-down {
+      top: 0px !important;
+    }
+    
+    .hidden {
+      display: none !important;
     }
   </style>
+  
   <script src="/app.js"></script>
 </head>
 
 <body>
-  <div class="container" id="container">
-    <div class="button-wrapper" id="button-wrapper">
-    <input type="checkbox" id="toggleButton" class="toggle-button">
-    <label for="toggleButton">
-      <img src="booklet/manual_icon.webp" width="40" height="40" alt="Game Booklet">
-    </label>
+  
+  <video autoplay loop muted playsinline class="bg-layer" id="bg-img">
+    <source src="/images/NSK_Warrior_title.mp4" type="video/mp4">
+    <img src="images/title.avif" class="bg-layer" id="bg-img">
+  </video>
+  
+  <div id="ui-layer">
+    
+    <div id="start-menu"></div>
+    
+    <div id="version-menu">
+      <!--h2 style="margin:0 0 15px 0; text-shadow: 2px 2px 4px black;">SELECT VERSION</h2-->
+      
+      <div id="version-list-root"></div>
+      
     </div>
-    <div id="book">
-      <!-- Pages added here from script -->
-    </div>
+    
+  </div>
+  
+  <div id="game-container">
     <div id="game"></div>
   </div>
-  <div id="myMessage" popover>
-      <h3>Testers:</h3>
-      <p>For the most updated content select "New Game"</p>
+  
+  <div id="book-container">
+    <div id="book"></div>
+    <div class="button-wrapper" id="button-wrapper">
+      <input type="checkbox" id="toggleButton" class="toggle-button">
+      <label for="toggleButton">
+        <img src="booklet/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+      </label>
+    </div>
   </div>
+  
   <audio id="flip" src="booklet/sounds/page_turn.mp3"></audio>
   <audio id="slide1" src="booklet/sounds/slide_in.mp3"></audio>
   <audio id="slide2" src="booklet/sounds/slide_out.mp3"></audio>
   <div id="blurBackground" class="blurred-background" style="display: none;"></div>
   
-  <script>
-    EJS_player = "#game";
-    EJS_core = "mednafen_psx_hw";
-    EJS_gameName = "NSK WARRIOR KF";
-    EJS_color = "#800000";
-    EJS_backgroundImage = "https://nsk-warrior-kf-files.netlify.app/images/title.avif";
-    EJS_backgroundColor = "#000000";
-    EJS_startOnLoaded = false;
-    EJS_pathtodata = "/emulatorjs/4.0.9/data/";
-    EJS_gameUrl = "https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip";
-    EJS_biosUrl = "https://nsk-warrior-kf-files.netlify.app/scph5501.bin";
-    EJS_loadStateURL = "/RPG Maker (USA).state";
-    // EJS_DEBUG_XX = true;
-    EJS_threads = true;
-    EJS_Buttons = {
-      restart: false
-    };
-    EJS_defaultOptions = {
-      'save-state-location': 'browser'
-    };
-  </script>
-  <script>
-    window.addEventListener('load', () => {
-      if (myMessage.popover === 'auto' || myPopover.popover === 'manual') {
-        myMessage.togglePopover();
-      }
-    });
-  </script>
-  <script src="/scripts/gamepad.js"></script>
-  <script src="/scripts/auto-save-load/auto-save-load.js"></script>
-  <script src="/emulatorjs/4.0.9/data/loader.js"></script>
+  <div id="custom-modal-overlay">
+    <div id="custom-modal">
+      <p id="modal-message" style="margin-top:0; font-size:1.1em;"></p>
+      <div id="modal-buttons"></div>
+    </div>
+  </div>
+  
+  <script src="/db-health-checker.js"></script>
   <script src="/booklet/jquery-3.7.1.min.js"></script>
   <script src="/booklet/turn.min.js"></script>
   <script src="/booklet/panzoom.min.js"></script>
   <script src="/booklet/booklet.js"></script>
+  <script src="spa-manager.js"></script>
+  <script src="gamepad.js"></script>
+  
 </body>
 
 </html>

@@ -1,17 +1,17 @@
-const APP_CACHE = 'nsk-warrior-cache-v001';
+const APP_CACHE = 'nsk-warrior-cache-v13';
 const networkFirstFiles = [
     '/',
     '/index.html',
     '/app.js',
     '/manifest.json',
-    '/booklet/booklet.css',
-    '/booklet/booklet.js',
-    '/spa-manager.js',
-    '/versions/keen-fine/RPG Maker (USA).state'
+    '/scripts/auto-save-load/auto-save-load.js',
+    '/scripts/auto-save-load/auto-save-load.css',
+    '/scripts/gamepad.js',
+    '/RPG Maker (USA).state'
 ];
 const urlsToCache = [
     '/',
-    '/images/NSK_Warrior_title.mp4',
+    'https://nsk-warrior-kf-files.netlify.app/images/title.avif',
     '/booklet/booklet.css',
     '/booklet/booklet.js',
     '/booklet/jquery-3.7.1.min.js',
@@ -41,8 +41,7 @@ const urlsToCache = [
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
     '/booklet/pages/20.webp',
-    'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip',
-    'https://nsk-warrior-kf-files.netlify.app/scph5501.bin'
+    'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip'
 ];
 
 self.addEventListener('install', event => {
@@ -71,7 +70,7 @@ self.addEventListener('activate', event => {
         caches.keys().then(keys => {
             return Promise.all(
                 keys.filter(key => key !== APP_CACHE)
-                .map(key => caches.delete(key))
+                    .map(key => caches.delete(key))
             );
         }).then(() => {
             return self.clients.claim();
@@ -81,7 +80,7 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
-    
+
     if (networkFirstFiles.includes(requestUrl.pathname)) {
         // Network-first strategy for specific files
         event.respondWith(

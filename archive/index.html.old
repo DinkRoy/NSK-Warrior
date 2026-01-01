@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#800000">
+  <meta name="description" content="An original game created with RPG Maker (PSX), and made playable in the browser by EmulatorJS.">
+  <title>NSK Warrior KF</title>
+  <link rel="stylesheet" href="booklet/booklet.css">
+  <link rel="stylesheet" href="/scripts/auto-save-load/auto-save-load.css">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/images/192x192.png">
+  <style>
+    body,
+    html {
+      height: 100%;
+      background-color: black;
+      color: white;
+    }
+    
+    body {
+      margin: 0;
+      overflow: hidden;
+      padding-top: env(safe-area-inset-top);
+    }
+    
+    .container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    #game {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      z-index: 1;
+      touch-action: none;
+    }
+
+    :popover-open {
+      max-width: 700px;
+      bottom: 50%;
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.3);
+      text-align: center;
+      color: white;
+      font-size: 1.1em;
+      font-family: system-ui;
+      padding: 10px 10px;
+     }
+    
+    @keyframes pop-in {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      80% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    [popover]:popover-open {
+      animation: pop-in 0.3s ease-out forwards;
+    }
+  </style>
+  <script src="/app.js"></script>
+</head>
+
+<body>
+  <div class="container" id="container">
+    <div class="button-wrapper" id="button-wrapper">
+    <input type="checkbox" id="toggleButton" class="toggle-button">
+    <label for="toggleButton">
+      <img src="booklet/manual_icon.webp" width="40" height="40" alt="Game Booklet">
+    </label>
+    </div>
+    <div id="book">
+      <!-- Pages added here from script -->
+    </div>
+    <div id="game"></div>
+  </div>
+  <div id="myMessage" popover>
+      <h3>Testers:</h3>
+      <p>For the most updated content select "New Game"</p>
+  </div>
+  <audio id="flip" src="booklet/sounds/page_turn.mp3"></audio>
+  <audio id="slide1" src="booklet/sounds/slide_in.mp3"></audio>
+  <audio id="slide2" src="booklet/sounds/slide_out.mp3"></audio>
+  <div id="blurBackground" class="blurred-background" style="display: none;"></div>
+  
+  <script>
+    EJS_player = "#game";
+    EJS_core = "mednafen_psx_hw";
+    EJS_gameName = "NSK WARRIOR KF";
+    EJS_color = "#800000";
+    EJS_backgroundImage = "https://nsk-warrior-kf-files.netlify.app/images/title.avif";
+    EJS_backgroundColor = "#000000";
+    EJS_startOnLoaded = false;
+    EJS_pathtodata = "/emulatorjs/4.0.9/data/";
+    EJS_gameUrl = "RPG Maker (USA).zip";
+    EJS_biosUrl = "scph5501.bin";
+    // EJS_gameUrl = "https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip";
+    // EJS_biosUrl = "https://nsk-warrior-kf-files.netlify.app/scph5501.bin";
+    EJS_loadStateURL = "/RPG Maker (USA).state";
+    // EJS_DEBUG_XX = true;
+    // EJS_threads = true;
+    EJS_Buttons = {
+      restart: false
+    };
+    EJS_defaultOptions = {
+      'save-state-location': 'browser'
+    };
+  </script>
+  <script>
+    window.addEventListener('load', () => {
+      if (myMessage.popover === 'auto' || myPopover.popover === 'manual') {
+        myMessage.togglePopover();
+      }
+    });
+  </script>
+  <script src="/scripts/gamepad.js"></script>
+  <script src="/scripts/auto-save-load/auto-save-load.js"></script>
+  <script src="/emulatorjs/4.0.9/data/loader.js"></script>
+  <script src="/booklet/jquery-3.7.1.min.js"></script>
+  <script src="/booklet/turn.min.js"></script>
+  <script src="/booklet/panzoom.min.js"></script>
+  <script src="/booklet/booklet.js"></script>
+</body>
+
+</html>
