@@ -769,11 +769,10 @@ function injectExitButton() {
       const btn = document.createElement('div');
       btn.id = 'ejs-custom-exit';
       btn.className = 'ejs_menu_button'; // Re-use EJS styling class
-      btn.style.cursor = 'pointer';
       
       btn.innerHTML = `
         <svg viewBox="0 0 460 460"><path style="fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(255,255,255);stroke-opacity:1;stroke-miterlimit:4;" d="M 14.000061 7.636414 L 14.000061 4.5 C 14.000061 4.223877 13.776123 3.999939 13.5 3.999939 L 4.5 3.999939 C 4.223877 3.999939 3.999939 4.223877 3.999939 4.5 L 3.999939 19.5 C 3.999939 19.776123 4.223877 20.000061 4.5 20.000061 L 13.5 20.000061 C 13.776123 20.000061 14.000061 19.776123 14.000061 19.5 L 14.000061 16.363586 " transform="matrix(21.333333,0,0,21.333333,0,0)"/><path style="fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(255,255,255);stroke-opacity:1;stroke-miterlimit:4;" d="M 9.999939 12 L 21 12 M 21 12 L 18.000366 8.499939 M 21 12 L 18 15.500061 " transform="matrix(21.333333,0,0,21.333333,0,0)"/></svg>
-      <span class="ejs_menu_text" style="left: 45%;">Exit</span>`;
+      <span class="ejs_menu_text">Exit</span>`;
       
       // Click Handler (Uses our custom showModal)
       btn.onclick = async () => {
