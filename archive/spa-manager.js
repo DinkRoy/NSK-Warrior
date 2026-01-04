@@ -1,5 +1,6 @@
 /**
  * SPA MANAGER - NSK WARRIOR (Integrated)
+ * Final Polish: Smart Menu Bypassing & Clean Deletion
  */
 
 // --- 1. CONFIGURATION ---
@@ -15,21 +16,21 @@ const APP_CONFIG = {
       prefix: "NSK_WARRIOR_OG",
       loadState: "/versions/original/RPG Maker (USA).state",
       slots: 8,
-      legacyKeys: ["NSK WARRIOR", "NSK_WARRIOR_OG", "NSK_WARRIOR_OG_1", "NSK_WARRIOR_OG_2", "NSK_WARRIOR_OG_3", "NSK_WARRIOR_OG_4"]
+      legacyKey: "NSK WARRIOR"
     },
     'v1.1': {
       label: "Version 1.1",
       prefix: "NSK_WARRIOR_V1",
       loadState: "/versions/v1.1/RPG Maker (USA).state",
       slots: 8,
-      legacyKeys: ["NSK WARRIOR v1.1", "NSK_WARRIOR_v1.1", "NSK_WARRIOR_v1.1_1", "NSK_WARRIOR_v1.1_2", "NSK_WARRIOR_v1.1_3", "NSK_WARRIOR_v1.1_4"]
+      legacyKey: "NSK WARRIOR v1.1"
     },
     'kf': {
       label: "Keen-Fine Edition",
       prefix: "NSK_WARRIOR_KF",
       loadState: "/versions/keen-fine/RPG Maker (USA).state",
       slots: 8,
-      legacyKeys: ["NSK WARRIOR KF"],
+      legacyKey: "NSK WARRIOR KF",
       comingSoon: false
     }
   }
@@ -115,34 +116,17 @@ async function getSaveBlob(uniqueId) {
   } catch (e) { return null; }
 }
 
-/**
- * Checks a list of potential legacy keys and returns the ones that exist in the DB.
- */
-async function findAvailableLegacySaves(keysArray) {
-  if (!keysArray || keysArray.length === 0) return [];
-  
+async function checkLegacyExists(baseName) {
   try {
     const db = await openStateDB();
-    if (!db || !db.objectStoreNames.contains(STORE_STATES)) return [];
-    
-    const foundKeys = [];
-    const tx = db.transaction([STORE_STATES], 'readonly');
-    const store = tx.objectStore(STORE_STATES);
-    
-    // We check them all in parallel promises
-    await Promise.all(keysArray.map(key => {
-      return new Promise(resolve => {
-        const req = store.count(key + ".state");
-        req.onsuccess = () => {
-          if (req.result > 0) foundKeys.push(key);
-          resolve();
-        };
-        req.onerror = () => resolve(); // Ignore errors, just don't add
-      });
-    }));
-    
-    return foundKeys;
-  } catch (e) { return []; }
+    if (!db || !db.objectStoreNames.contains(STORE_STATES)) return false;
+    return new Promise(resolve => {
+      const tx = db.transaction([STORE_STATES], 'readonly');
+      const req = tx.objectStore(STORE_STATES).count(baseName + ".state");
+      req.onsuccess = () => resolve(req.result > 0);
+      req.onerror = () => resolve(false);
+    });
+  } catch (e) { return false; }
 }
 
 async function saveScreenshot(key, blob) {
@@ -398,8 +382,8 @@ window.addEventListener('popstate', async (event) => {
   else {
     if (toggleButton.checked) {
       bookHandler('close');
-      return
-      
+      return 
+
     } else {
       // Exit Prompt Logic
       if (isGameVisible) {
@@ -588,10 +572,10 @@ async function renderSaveSlots(verId, container) {
   container.innerHTML = '';
   const config = APP_CONFIG.versions[verId];
   
-  // 1. Find ALL valid legacy saves for this version
-  let foundLegacySaves = [];
-  if (globalMode === 'PLAY' && config.legacyKeys) {
-    foundLegacySaves = await findAvailableLegacySaves(config.legacyKeys);
+  let legacyAvailable = false;
+  // Legacy check only in PLAY mode (Main Menu)
+  if (globalMode === 'PLAY' && config.legacyKey) {
+    legacyAvailable = await checkLegacyExists(config.legacyKey);
   }
   
   for (let i = 1; i <= config.slots; i++) {
@@ -613,22 +597,19 @@ async function renderSaveSlots(verId, container) {
     
     // Text Info
     const infoDiv = document.createElement('div');
-    infoDiv.className = "infoDiv";
-    infoDiv.style = "margin-right:10px;flex:1;width:70px;overflow-wrap:break-word";
+    infoDiv.style.flex = "1";
     
     let displayStatus = status;
-    let importTargetKey = null;
+    let isImportSlot = false;
     
-    // 2. Logic: If slot is empty AND we have a legacy save in our "found" pile...
-    if (status === "Empty" && foundLegacySaves.length > 0 && globalMode === 'PLAY') {
-      // Grab the first available legacy save
-      importTargetKey = foundLegacySaves.shift(); // Removes it from array so next slot gets the next one
-      let rawStatus = `Legacy Save Found: ${importTargetKey}`;
-      displayStatus = rawStatus.replace(/_/g, '_<wbr/>');
+    if (status === "Empty" && legacyAvailable && globalMode === 'PLAY') {
+      displayStatus = "Legacy Save Found";
+      isImportSlot = true;
+      legacyAvailable = false;
     }
     
     infoDiv.innerHTML = `<div style="font-weight:bold; font-size: 0.9em">Slot ${i}</div>
-                         <div style="font-size:0.7em; color:#aaa">${screenshotData?.created || displayStatus}</div>`;
+                         <div style="font-size:0.7em; color:#aaa; width:60px; margin-right:10px">${screenshotData?.created || displayStatus}</div>`;
     
     // --- BUTTON LOGIC ---
     const actionBtn = document.createElement('button');
@@ -680,13 +661,13 @@ async function renderSaveSlots(verId, container) {
     }
     // 3. PLAY / LOAD MODE
     else {
-      if (importTargetKey) {
+      if (isImportSlot) {
         actionBtn.innerText = "Import";
         actionBtn.style.cssText += "background-color: rgba(50, 0, 0, 0.9); border: 1px solid #27ae60;";
         actionBtn.onclick = async (e) => {
           e.stopPropagation();
-          const doImport = await showModal(`Import "${importTargetKey}" to Slot ${i}?`, 'confirm');
-          if (doImport) migrateLegacySave(importTargetKey, uniqueId);
+          const doImport = await showModal(`Import legacy save to Slot ${i}?`, 'confirm');
+          if (doImport) migrateLegacySave(config.legacyKey, uniqueId);
         };
       }
       else if (status === "Empty") {
@@ -828,7 +809,7 @@ function injectExitButton() {
     
     // Stop trying after 10 seconds
     if (attempts > 20) clearInterval(findToolbar);
-  }, 500);
+  }, 500); // Check every 500ms
 }
 
 function displayIcon(icon) {
