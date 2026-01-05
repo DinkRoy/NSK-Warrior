@@ -1,4 +1,4 @@
-// Button SVG icons
+// Button SVG icons (Keep these global/outside)
 const circleSVG = `
 <svg viewBox="0 0 48 48">
   <circle cx="24" cy="24" r="17" stroke-width="1" stroke="currentColor" fill="none" />
@@ -26,10 +26,16 @@ const crossSVG = `
 </svg>
 `;
 
-// Manually adjust virtual gamepad position 
-document.addEventListener('DOMContentLoaded', (event) => {
+// Define the initialization function globally
+window.initVirtualGamepad = function() {
+  console.log("Initializing Virtual Gamepad Customizations...");
+
   function applyCustomStyles() {
+    // Prevent adding style block multiple times
+    if (document.getElementById('custom-gamepad-styles')) return;
+
     const style = document.createElement('style');
+    style.id = 'custom-gamepad-styles';
     style.innerHTML = `
             .ejs_virtualGamepad_parent {
               width: 100vw;
@@ -40,7 +46,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 position: absolute;
                 height: 165px;
                 cursor: grab;
-                touch-action: none; /* Disable default touch actions */
+                touch-action: none; 
             }
             .ejs_dpad_main {
               position: absolute;
@@ -51,8 +57,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             .ejs_virtualGamepad_left::after, .ejs_virtualGamepad_right::after {
                 content: "";
                 position: absolute;
-                width: 30px; /* SVG dimensions */
-                height: 30px; /* SVG dimensions */
+                width: 30px; 
+                height: 30px; 
                 bottom: -10px;
                 left: 50%;
                 transform: translateX(-50%) rotate(90deg);
@@ -68,7 +74,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 bottom: 0;
             }
             .ejs_virtualGamepad_left *, .ejs_virtualGamepad_right * {
-                pointer-events: auto; /* Allow child elements to handle their own events */
+                pointer-events: auto; 
             }
             .ejs_virtualGamepad_button_down {
                 border-radius: 50%;
@@ -77,7 +83,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.head.appendChild(style);
   }
   
-  // Disable context menu and other default actions
+  // Disable default actions
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   document.addEventListener('touchstart', (e) => e.preventDefault());
   document.addEventListener('pointerdown', (e) => e.preventDefault());
@@ -86,6 +92,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const virtualGamepadLeft = document.querySelector('.ejs_virtualGamepad_left');
     const virtualGamepadRight = document.querySelector('.ejs_virtualGamepad_right');
     
+    // FIX: Check if elements exist BEFORE trying to access .style
+    if (!virtualGamepadLeft || !virtualGamepadRight) return;
+
     // Load positions from local storage
     if (localStorage.getItem('virtualGamepadLeft')) {
       const leftPosition = JSON.parse(localStorage.getItem('virtualGamepadLeft'));
@@ -98,11 +107,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
       virtualGamepadRight.style.bottom = rightPosition.bottom;
     }
     
-    if (virtualGamepadLeft && virtualGamepadRight) {
-      applyCustomStyles();
-      makeDraggable(virtualGamepadLeft, 'left');
-      makeDraggable(virtualGamepadRight, 'right');
-    }
+    applyCustomStyles();
+    makeDraggable(virtualGamepadLeft, 'left');
+    makeDraggable(virtualGamepadRight, 'right');
   }
   
   function makeDraggable(element, horizontalProperty) {
@@ -139,7 +146,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           initialPercentX + (deltaX / windowWidth) * 100 :
           initialPercentX - (deltaX / windowWidth) * 100;
         let newPercentY = initialPercentY - (deltaY / windowHeight) * 100;
-        // Constrain movement within visible boundaries
+        
         newPercentX = Math.max(0, Math.min(newPercentX, 100 - (element.clientWidth / windowWidth) * 100));
         newPercentY = Math.max(0, Math.min(newPercentY, 100 - (element.clientHeight / windowHeight) * 100));
         if (horizontalProperty === 'left') {
@@ -149,17 +156,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
         element.style.bottom = `${newPercentY}%`;
       } else {
-        clearTimeout(longPressTimer); // Cancel long press if moved before threshold
+        clearTimeout(longPressTimer); 
       }
     });
     
     element.addEventListener('touchend', (e) => {
-      clearTimeout(longPressTimer); // Cancel long press timer if touch ends before threshold
+      clearTimeout(longPressTimer); 
       if (isDragging) {
         isDragging = false;
         element.style.cursor = 'grab';
         
-        // Save positions to local storage
         const position = {
           left: element.style.left,
           right: element.style.right,
@@ -177,13 +183,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
       }
     });
     
-    // Prevent touch events from propagating to parent elements
     element.addEventListener('touchstart', (e) => e.stopImmediatePropagation());
     element.addEventListener('touchmove', (e) => e.stopImmediatePropagation());
     element.addEventListener('touchend', (e) => e.stopImmediatePropagation());
     element.addEventListener('touchcancel', (e) => e.stopImmediatePropagation());
   }
   
+  // Use MutationObserver to wait for EJS to inject the gamepad elements
   const observer = new MutationObserver((mutationsList, observer) => {
     if (document.querySelector('.ejs_virtualGamepad_left') && document.querySelector('.ejs_virtualGamepad_right')) {
       applyStyles();
@@ -193,53 +199,54 @@ document.addEventListener('DOMContentLoaded', (event) => {
   
   observer.observe(document.body, { childList: true, subtree: true });
   
-  // Apply styles in case elements are already in the DOM when script runs
+  // Try applying once immediately just in case they already exist
   applyStyles();
-});
+};
 
+// Global Settings (Must be defined immediately for EJS to see them)
 EJS_VirtualGamepadSettings = [
-    {
-      type: "button",
-      text: triangleSVG,
-      id: "y",
-      location: "right",
-      left: 40,
-      bold: true,
-      input_value: 9
-    },
-    {
-      type: "button",
-      text: squareSVG,
-      id: "X",
-      location: "right",
-      top: 40,
-      bold: true,
-      input_value: 1
-    },
-    {
-      type: "button",
-      text: circleSVG,
-      id: "b",
-      location: "right",
-      left: 81,
-      top: 40,
-      bold: true,
-      input_value: 8
-    },
-    {
-      type: "button",
-      text: crossSVG,
-      id: "a",
-      location: "right",
-      left: 40,
-      top: 80,
-      bold: true,
-      input_value: 0
-    },
-    {
-      type: "dpad",
-      location: "left",
-      right: "50%",
-      joystickInput: false,
-      inputValues: [4, 5, 6, 7]
-    }];
+{
+  type: "button",
+  text: triangleSVG,
+  id: "y",
+  location: "right",
+  left: 40,
+  bold: true,
+  input_value: 9
+},
+{
+  type: "button",
+  text: circleSVG,
+  id: "X",
+  location: "right",
+  top: 40,
+  bold: true,
+  input_value: 1
+},
+{
+  type: "button",
+  text: squareSVG,
+  id: "b",
+  location: "right",
+  left: 81,
+  top: 40,
+  bold: true,
+  input_value: 8
+},
+{
+  type: "button",
+  text: crossSVG,
+  id: "a",
+  location: "right",
+  left: 40,
+  top: 80,
+  bold: true,
+  input_value: 0
+},
+{
+  type: "dpad",
+  location: "left",
+  right: "50%",
+  joystickInput: false,
+  inputValues: [4, 5, 6, 7]
+}];

@@ -30,7 +30,8 @@ const APP_CONFIG = {
       loadState: "/versions/keen-fine/RPG Maker (USA).state",
       slots: 8,
       legacyKeys: ["NSK WARRIOR KF"],
-      comingSoon: false
+      comingSoon: false,
+      updated = true
     }
   }
 };
@@ -582,6 +583,11 @@ async function handleVersionSelect(verId) {
   } else {
     await renderSaveSlots(verId, container);
   }
+  if (config.updated) {
+    await showModal("Start a New Game for updated content.", 'alert');
+    config.updated = false;
+    return;
+  }
 }
 
 async function renderSaveSlots(verId, container) {
@@ -627,8 +633,12 @@ async function renderSaveSlots(verId, container) {
       displayStatus = rawStatus.replace(/_/g, '_<wbr/>');
     }
     
+    const dateDisplay = screenshotData?.created ?
+      screenshotData.created.replace(' ', '<br>') :
+      displayStatus;
+    
     infoDiv.innerHTML = `<div style="font-weight:bold; font-size: 0.9em">Slot ${i}</div>
-                         <div style="font-size:0.7em; color:#aaa">${screenshotData?.created || displayStatus}</div>`;
+                         <div style="font-size:0.7em; color:#aaa; line-height: 1.2;">${dateDisplay}</div>`;
     
     // --- BUTTON LOGIC ---
     const actionBtn = document.createElement('button');
@@ -960,7 +970,12 @@ window.EJS_onGameStart = async function(emulator) {
       await performManualSave();
     }
   });
+  // Add custom button to EJS toolbar
   injectExitButton();
+  // Add custom gamepad styles (draggable + PSX svg shapes)
+  if (window.initVirtualGamepad) {
+    window.initVirtualGamepad();
+  }
 };
 
 // REFACTOR: Smart Hook - Check Save Location
