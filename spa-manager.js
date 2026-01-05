@@ -12,7 +12,7 @@ const APP_CONFIG = {
   versions: {
     'og': {
       label: "Original Game",
-      prefix: "NSK_WARRIOR_OG",
+      prefix: "NSK_WARRIOR_0",
       loadState: "/versions/original/RPG Maker (USA).state",
       slots: 8,
       legacyKeys: ["NSK WARRIOR", "NSK_WARRIOR_OG", "NSK_WARRIOR_OG_1", "NSK_WARRIOR_OG_2", "NSK_WARRIOR_OG_3", "NSK_WARRIOR_OG_4"]
@@ -31,7 +31,7 @@ const APP_CONFIG = {
       slots: 8,
       legacyKeys: ["NSK WARRIOR KF"],
       comingSoon: false,
-      updated = true
+      updated: true
     }
   }
 };
@@ -117,9 +117,10 @@ async function getSaveBlob(uniqueId) {
 }
 
 /**
- * Checks a list of potential legacy keys and returns the ones that exist in the DB.
+ * Checks a list of potential legacy keys and returns the ones that exist.
+ * FIX: Strictly ignores keys that match the current version's prefix.
  */
-async function findAvailableLegacySaves(keysArray) {
+async function findAvailableLegacySaves(keysArray, currentPrefix) {
   if (!keysArray || keysArray.length === 0) return [];
   
   try {
@@ -130,15 +131,21 @@ async function findAvailableLegacySaves(keysArray) {
     const tx = db.transaction([STORE_STATES], 'readonly');
     const store = tx.objectStore(STORE_STATES);
     
-    // We check them all in parallel promises
     await Promise.all(keysArray.map(key => {
       return new Promise(resolve => {
+        // CRITICAL FIX: Ignore keys that belong to the current version
+        if (currentPrefix && key.includes(currentPrefix)) {
+          // Skip this key, it's a current save slot, not legacy
+          resolve();
+          return;
+        }
+        
         const req = store.count(key + ".state");
         req.onsuccess = () => {
           if (req.result > 0) foundKeys.push(key);
           resolve();
         };
-        req.onerror = () => resolve(); // Ignore errors, just don't add
+        req.onerror = () => resolve();
       });
     }));
     
@@ -176,49 +183,82 @@ async function loadScreenshot(key) {
   } catch (e) { return null; }
 }
 
+/**
+ * Migrates a save from Legacy Name -> New Slot Name
+ * FIX: Waits for transaction.oncomplete to prevent rollback before reload.
+ */
 async function migrateLegacySave(legacyBaseName, targetBaseName) {
   const legacyFile = legacyBaseName + ".state";
   const targetFile = targetBaseName + ".state";
-  const dbStates = await openStateDB();
   
+  // 1. Migrate State File & Update Index
+  const dbStates = await openStateDB();
   if (dbStates && dbStates.objectStoreNames.contains(STORE_STATES)) {
-    await new Promise(resolve => {
+    await new Promise((resolve, reject) => {
       const tx = dbStates.transaction([STORE_STATES], 'readwrite');
       const store = tx.objectStore(STORE_STATES);
+      
+      // CRITICAL FIX: Only resolve when the transaction is 100% done
+      tx.oncomplete = () => {
+        console.log("State DB Transaction Committed.");
+        resolve();
+      };
+      
+      tx.onerror = (e) => {
+        console.error("State DB Transaction Failed:", e);
+        reject(e);
+      };
+      
       store.get(legacyFile).onsuccess = (e) => {
         const data = e.target.result;
         if (data) {
+          // A. Move the file
           store.put(data, targetFile);
           store.delete(legacyFile);
+          
+          // B. Update the EJS Master Index (?EJS_KEYS!)
           store.get(KEY_MASTER_LIST).onsuccess = (e2) => {
             let keys = e2.target.result || [];
+            
+            // Remove old key
             const oldIdx = keys.indexOf(legacyFile);
             if (oldIdx > -1) keys.splice(oldIdx, 1);
+            
+            // Add new key (if not already there)
             if (!keys.includes(targetFile)) keys.push(targetFile);
+            
+            // Save Index back
             store.put(keys, KEY_MASTER_LIST);
           };
         }
-        resolve();
+        // DO NOT call resolve() here! Wait for tx.oncomplete
       };
     });
   }
+  
+  // 2. Migrate Screenshot (Same logic applied here for safety)
   const dbScreens = await openScreenshotDB();
   if (dbScreens) {
-    await new Promise(resolve => {
+    await new Promise((resolve, reject) => {
       const tx = dbScreens.transaction([STORE_SCREENSHOTS], 'readwrite');
       const store = tx.objectStore(STORE_SCREENSHOTS);
+      
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve(); // Proceed even if screenshot fails
+      
       store.get(legacyBaseName).onsuccess = (e) => {
         const data = e.target.result;
         if (data) {
           store.put(data, targetBaseName);
           store.delete(legacyBaseName);
         }
-        resolve();
+        // DO NOT call resolve() here
       };
     });
   }
+  
   await showModal("Migration Complete!", 'alert');
-  window.location.reload();
+  return true;
 }
 
 /**
@@ -597,7 +637,7 @@ async function renderSaveSlots(verId, container) {
   // 1. Find ALL valid legacy saves for this version
   let foundLegacySaves = [];
   if (globalMode === 'PLAY' && config.legacyKeys) {
-    foundLegacySaves = await findAvailableLegacySaves(config.legacyKeys);
+    foundLegacySaves = await findAvailableLegacySaves(config.legacyKeys, config.prefix);
   }
   
   for (let i = 1; i <= config.slots; i++) {
@@ -696,7 +736,15 @@ async function renderSaveSlots(verId, container) {
         actionBtn.onclick = async (e) => {
           e.stopPropagation();
           const doImport = await showModal(`Import "${importTargetKey}" to Slot ${i}?`, 'confirm');
-          if (doImport) migrateLegacySave(importTargetKey, uniqueId);
+          if (doImport) {
+            // A. Run Migration and wait for it to finish
+            const success = await migrateLegacySave(importTargetKey, uniqueId);
+            
+            // B. If successful, re-render this menu instantly
+            if (success) {
+              await renderSaveSlots(verId, container);
+            }
+          }
         };
       }
       else if (status === "Empty") {
