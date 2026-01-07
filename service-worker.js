@@ -9,7 +9,8 @@ const networkFirstFiles = [
     '/booklet/pages/2.webp',
     '/spa-manager.js',
     '/gamepad.js',
-    '/versions/keen-fine/RPG Maker (USA).state'
+    '/versions/keen-fine/RPG Maker (USA).state',
+    '/versions/test-play/RPG Maker (USA).state'
 ];
 const urlsToCache = [
     '/',

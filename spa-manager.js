@@ -38,6 +38,7 @@ const APP_CONFIG = {
       prefix: "TEST_PLAY",
       loadState: "/versions/test-play/RPG Maker (USA).state",
       slots: 8,
+      updated: true,
       info: true
     }
   }
