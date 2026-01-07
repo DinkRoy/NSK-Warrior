@@ -63,7 +63,7 @@ function showUpdateNotification() {
   console.log('showUpdateNotification called');
   const notification = document.createElement('div');
   notification.innerHTML = `
-    <div id="update-notification" style="position: fixed; top: -150px; left: 50%; transform: translateX(-50%); transition: top 0.5s ease-in-out;">
+    <div id="update-notification" style="position: fixed; top: -150px; left: 50%; z-index: 1000; transform: translateX(-50%); transition: top 0.5s ease-in-out;">
       <p id="modal-message">An update is available!</p>
       <div id="modal-buttons">
         <button id="update-button" style="background: #a00000;">Reload</button>

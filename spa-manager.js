@@ -32,6 +32,13 @@ const APP_CONFIG = {
       legacyKeys: ["NSK WARRIOR KF"],
       comingSoon: false,
       updated: true
+    },
+    'tp': {
+      label: "Test Play",
+      prefix: "TEST_PLAY",
+      loadState: "/versions/test-play/RPG Maker (USA).state",
+      slots: 8,
+      info: true
     }
   }
 };
@@ -80,10 +87,29 @@ async function checkForAnySaves() {
   try {
     const db = await openStateDB();
     if (!db || !db.objectStoreNames.contains(STORE_STATES)) { if (db) db.close(); return false; }
+    
     return new Promise(resolve => {
       const tx = db.transaction([STORE_STATES], 'readonly');
       const req = tx.objectStore(STORE_STATES).getAllKeys();
-      req.onsuccess = () => resolve(req.result.some(k => k.startsWith("NSK_WARRIOR")));
+      
+      req.onsuccess = () => {
+        // 1. Get all keys from the DB result
+        const allKeys = req.result || [];
+        
+        // 2. Filter for just the ones starting with your prefix
+        const matchingSaves = allKeys.filter(k => k.startsWith("NSK"));
+        
+        // 3. Log the specific array of filenames found
+        if (matchingSaves.length > 0) {
+          console.log(`Saves Found: ${matchingSaves.join(', ')}`);
+        } else {
+          console.log("No NSK_WARRIOR saves found.");
+        }
+        
+        // 4. Resolve true if we found any, false otherwise
+        resolve(matchingSaves.length > 0);
+      }
+      
       req.onerror = () => resolve(false);
     });
   } catch (e) { return false; }
@@ -142,7 +168,10 @@ async function findAvailableLegacySaves(keysArray, currentPrefix) {
         
         const req = store.count(key + ".state");
         req.onsuccess = () => {
-          if (req.result > 0) foundKeys.push(key);
+          if (req.result > 0) {
+            foundKeys.push(key);
+            console.log(`Legacy Save Found: ${key}`);
+          }
           resolve();
         };
         req.onerror = () => resolve();
@@ -305,8 +334,11 @@ function showModal(message, type = 'alert') {
   return new Promise((resolve) => {
     const overlay = document.getElementById('custom-modal-overlay');
     const msgEl = document.getElementById('modal-message');
+    const infoEl = document.getElementById('info-modal-message');
     const btnsEl = document.getElementById('modal-buttons');
     
+    msgEl.style.display = 'block';
+    infoEl.style.display = 'none';
     msgEl.innerText = message;
     btnsEl.innerHTML = ''; // Clear old buttons
     
@@ -316,7 +348,7 @@ function showModal(message, type = 'alert') {
     okBtn.innerText = type === 'confirm' ? 'Yes' : 'OK';
     
     okBtn.onclick = (e) => {
-      e.stopPropagation(); // Prevent bubbling
+      e.stopPropagation();
       overlay.classList.remove('visible');
       resolve(true);
     };
@@ -336,7 +368,12 @@ function showModal(message, type = 'alert') {
       btnsEl.appendChild(cancelBtn);
     }
     
-    // Show
+    if (type === 'info') {
+      msgEl.style.display = 'none';
+      infoEl.style.display = 'block';
+      infoEl.innerText = message;
+    }
+    
     overlay.classList.add('visible');
   });
 }
@@ -492,6 +529,7 @@ function initVersionMenuStructure() {
     btn.innerText = config.label;
     btn.onclick = () => handleVersionSelect(id);
     btn.dataset.verId = id;
+    if (id === "tp") btn.style.cssText = "background: rgba(50, 0, 0, 0.9); border: 1px solid #a00000";
     
     const container = document.createElement('div');
     container.id = `slots-${id}`;
@@ -623,9 +661,9 @@ async function handleVersionSelect(verId) {
   } else {
     await renderSaveSlots(verId, container);
   }
-  if (config.updated) {
-    await showModal("Start a New Game for updated content.", 'alert');
-    config.updated = false;
+  if (config.info) {
+    await showModal("This version is for testing purposes.\n\n* Exit battles\n* Switch control\n* Clip walls by holding 'Square'", 'info');
+    config.info = false;
     return;
   }
 }
@@ -749,6 +787,10 @@ async function renderSaveSlots(verId, container) {
       }
       else if (status === "Empty") {
         actionBtn.innerText = "New Game";
+        if (config.updated) {
+          actionBtn.innerText = "Updated";
+          actionBtn.classList.add('pulse');
+        }
         actionBtn.style.backgroundColor = "#a00000";
         actionBtn.onclick = (e) => {
           e.stopPropagation();
