@@ -85,17 +85,18 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
     
-    if (networkFirstFiles.includes(requestUrl.pathname)) {
+    // Decode the pathname to handle spaces (%20) matching array
+    const decodedPath = decodeURI(requestUrl.pathname);
+
+    if (networkFirstFiles.includes(decodedPath)) {
         // Network-first strategy for specific files
         event.respondWith(
             fetch(event.request, { cache: 'reload' })
             .then(networkResponse => {
-                // If we got a valid response, cache it (only for GET)
                 if (networkResponse && networkResponse.ok && event.request.method === 'GET') {
                     const responseClone = networkResponse.clone();
                     caches.open(APP_CACHE).then(cache => {
                         cache.put(event.request, responseClone).catch(err => {
-                            // Some responses (opaque, cross-origin) may fail to be stored; handle gracefully
                             console.warn('Cache put failed for', event.request.url, err);
                         });
                     });
@@ -103,7 +104,7 @@ self.addEventListener('fetch', event => {
                 return networkResponse;
             })
             .catch(() => {
-                // On failure, try the cache
+                // On failure (offline), try the cache
                 return caches.match(event.request);
             })
         );
@@ -126,6 +127,7 @@ self.addEventListener('fetch', event => {
                     });
                     return networkResponse;
                 }).catch(() => {
+                    // todo: fallback image/page here if strict offline handling is needed
                     return caches.match(event.request);
                 });
             })
