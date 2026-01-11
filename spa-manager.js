@@ -31,14 +31,14 @@ const APP_CONFIG = {
       slots: 8,
       legacyKeys: ["NSK WARRIOR KF"],
       comingSoon: false,
-      updated: true
+      updated: "1.0"
     },
     'tp': {
       label: "Test Play",
       prefix: "TEST_PLAY",
       loadState: "/versions/test-play/RPG Maker (USA).state",
       slots: 8,
-      updated: true,
+      updated: "1.0",
       info: true
     }
   }
@@ -787,14 +787,22 @@ async function renderSaveSlots(verId, container) {
         };
       }
       else if (status === "Empty") {
-        actionBtn.innerText = "New Game";
-        if (config.updated) {
+        const storageKey = `NW_UPDATE_ACKNOWLEDGED_${verId}`; 
+        const lastSeenVersion = localStorage.getItem(storageKey);
+        const showUpdateTag = config.updated && (lastSeenVersion !== config.updated);
+
+        if (showUpdateTag) {
           actionBtn.innerText = "Updated";
           actionBtn.classList.add('pulse');
+        } else {
+          actionBtn.innerText = "New Game";
         }
         actionBtn.style.backgroundColor = "#a00000";
         actionBtn.onclick = (e) => {
           e.stopPropagation();
+          if (showUpdateTag) {
+            localStorage.setItem(storageKey, config.updated);
+          }
           launchGame(verId, i);
         };
       }
