@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v118';
+const APP_CACHE = 'nsk-warrior-cache-v001';
 const networkFirstFiles = [
     '/',
     '/index.html',
@@ -7,21 +7,13 @@ const networkFirstFiles = [
     '/booklet/booklet.css',
     '/booklet/booklet.js',
     '/booklet/pages/2.webp',
-    '/versions/v1.1/v1-1-save-selector.html',
-    '/versions/original/original-save-selector.html',
-    '/versions/original/og-save-1.html',
-    '/versions/original/og-save-2.html',
-    '/versions/original/og-save-3.html',
-    '/versions/original/og-save-4.html',
-    '/versions/v1.1/v1-1-save-1.html',
-    '/versions/v1.1/v1-1-save-2.html',
-    '/versions/v1.1/v1-1-save-3.html',
-    '/versions/v1.1/v1-1-save-4.html',
-    '/scripts/auto-save-load/auto-save-load.js'
+    '/spa-manager.js',
+    '/gamepad.js',
+    '/versions/keen-fine/RPG Maker (USA).state'
 ];
 const urlsToCache = [
     '/',
-    '/images/title.avif',
+    '/images/NSK_Warrior_title.mp4',
     '/booklet/booklet.css',
     '/booklet/booklet.js',
     '/booklet/jquery-3.7.1.min.js',
@@ -51,7 +43,8 @@ const urlsToCache = [
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
     '/booklet/pages/20.webp',
-    'https://nsk-warrior-files.netlify.app/RPG Maker (USA).zip'
+    'https://nsk-warrior-files.netlify.app/RPG Maker (USA).zip',
+    'https://nsk-warrior-files.netlify.app/scph5501.bin'
 ];
 
 self.addEventListener('install', event => {
@@ -91,17 +84,18 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
     
-    if (networkFirstFiles.includes(requestUrl.pathname)) {
+    // Decode the pathname to handle spaces (%20) matching array
+    const decodedPath = decodeURI(requestUrl.pathname);
+
+    if (networkFirstFiles.includes(decodedPath)) {
         // Network-first strategy for specific files
         event.respondWith(
             fetch(event.request, { cache: 'reload' })
             .then(networkResponse => {
-                // If we got a valid response, cache it (only for GET)
                 if (networkResponse && networkResponse.ok && event.request.method === 'GET') {
                     const responseClone = networkResponse.clone();
                     caches.open(APP_CACHE).then(cache => {
                         cache.put(event.request, responseClone).catch(err => {
-                            // Some responses (opaque, cross-origin) may fail to be stored; handle gracefully
                             console.warn('Cache put failed for', event.request.url, err);
                         });
                     });
@@ -109,7 +103,7 @@ self.addEventListener('fetch', event => {
                 return networkResponse;
             })
             .catch(() => {
-                // On failure, try the cache
+                // On failure (offline), try the cache
                 return caches.match(event.request);
             })
         );
@@ -132,6 +126,7 @@ self.addEventListener('fetch', event => {
                     });
                     return networkResponse;
                 }).catch(() => {
+                    // todo: fallback image/page here if strict offline handling is needed
                     return caches.match(event.request);
                 });
             })
