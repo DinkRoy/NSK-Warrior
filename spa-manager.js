@@ -787,7 +787,7 @@ async function renderSaveSlots(verId, container) {
         };
       }
       else if (status === "Empty") {
-        const storageKey = `NW_UPDATE_ACKNOWLEDGED_${verId}`; 
+        const storageKey = `${verId}_UPDATE_ACKNOWLEDGED`; 
         const lastSeenVersion = localStorage.getItem(storageKey);
         const showUpdateTag = config.updated && (lastSeenVersion !== config.updated);
 
