@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v005';
+const APP_CACHE = 'nsk-warrior-cache-v006';
 const networkFirstFiles = [
     '/',
     '/index.html',
@@ -44,9 +44,7 @@ const urlsToCache = [
     '/booklet/pages/17.webp',
     '/booklet/pages/18.webp',
     '/booklet/pages/19.webp',
-    '/booklet/pages/20.webp',
-    'https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip',
-    'https://nsk-warrior-kf-files.netlify.app/scph5501.bin'
+    '/booklet/pages/20.webp'
 ];
 
 self.addEventListener('install', event => {
