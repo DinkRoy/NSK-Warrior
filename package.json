@@ -1,0 +1,8 @@
+{
+  "name": "nsk-warrior-keen-fine-beta",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "latest"
+  }
+}
