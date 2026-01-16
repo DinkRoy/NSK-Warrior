@@ -6,8 +6,8 @@
 const APP_CONFIG = {
   ejsPath: "emulatorjs/4.0.9/data/",
   core: "mednafen_psx_hw",
-  biosUrl: "https://nsk-warrior-kf-files.netlify.app/scph5501.bin",
-  gameUrl: "https://nsk-warrior-kf-files.netlify.app/RPG Maker (USA).zip",
+  biosUrl: "/api/serve-game?key=bios",
+  gameUrl: "/api/serve-game?key=rom",
   
   versions: {
     'og': {
