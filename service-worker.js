@@ -1,4 +1,4 @@
-const APP_CACHE = 'nsk-warrior-cache-v004';
+const APP_CACHE = 'nsk-warrior-cache-v005';
 const networkFirstFiles = [
     '/',
     '/index.html',
@@ -9,6 +9,7 @@ const networkFirstFiles = [
     '/booklet/pages/2.webp',
     '/spa-manager.js',
     '/gamepad.js',
+    '/loading-ring.js',
     '/versions/keen-fine/RPG Maker (USA).state',
     '/versions/test-play/RPG Maker (USA).state'
 ];

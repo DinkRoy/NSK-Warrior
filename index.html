@@ -173,7 +173,6 @@
       transition: max-height 0.3s ease, opacity 0.3s ease;
       background: rgba(0, 0, 0, 0.9);
       border-radius: 15px;
-      
       pointer-events: auto;
       position: relative;
       /* Stays in flow, pushes buttons down */
@@ -351,6 +350,100 @@
       text-align: left;
     }
     
+    /* Custom loading ring - SCOPED */
+    .loader-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .loader-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #5e5e5e, #2a2a2a);
+      box-shadow:
+        -5px -5px 15px rgba(255, 255, 255, 0.1),
+        5px 5px 15px rgba(0, 0, 0, 0.5),
+        inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .loader-center {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background-color: #1a1a1a;
+      border-radius: 50%;
+      box-shadow:
+        inset 5px 5px 10px rgba(0, 0, 0, 0.7),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .percentage-text {
+      margin-top: 45px; 
+      color: #39ff14;
+      font-size: 1.7rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #008f11;
+    }
+    
+    .status-text {
+      position: absolute;
+      top: 30%;
+      color: #888;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      width: 80%;
+    }
+    
+    /* SCOPED SVG SELECTORS */
+    .loader-container svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      position: relative;
+      z-index: 3;
+      overflow: visible;
+    }
+    
+    .loader-container circle {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+    
+    .loader-container .track {
+      stroke: #111;
+    }
+    
+    .loader-container .progress-ring {
+      stroke: #39ff14;
+      stroke-dasharray: 565.48;
+      stroke-dashoffset: 565.48;
+      transition: stroke-dashoffset 0.1s linear;
+      filter: drop-shadow(0 0 5px #39ff14) drop-shadow(0 0 10px #008f11);
+    }
+  
+    
     /* --- ANIMATIONS --- */
     
     @keyframes slideUpFade {
@@ -447,6 +540,19 @@
     </div>
   </div>
   
+  <div id="custom-loader-overlay" class="loader-overlay" style="display: none;">
+    <div class="loader-container">
+      <div class="loader-center">
+        <span class="status-text" id="status-task">Loading</span>
+        <span class="percentage-text" id="loading-text">0%</span>
+      </div>
+      <svg>
+        <circle class="track" cx="100" cy="100" r="90"></circle>
+        <circle class="progress-ring" id="loading-ring" cx="100" cy="100" r="90"></circle>
+      </svg>
+    </div>
+  </div>
+  
   <script src="/db-health-checker.js"></script>
   <script src="/booklet/jquery-3.7.1.min.js"></script>
   <script src="/booklet/turn.min.js"></script>
@@ -454,6 +560,7 @@
   <script src="/booklet/booklet.js"></script>
   <script src="spa-manager.js"></script>
   <script src="gamepad.js"></script>
+  <script src="loading-ring.js"></script>
   
 </body>
 
