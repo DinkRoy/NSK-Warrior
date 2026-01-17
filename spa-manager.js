@@ -1138,6 +1138,7 @@ async function launchGame(verId, slotNum) {
   console.log("Threads enabled?", EJS_threads);
   window.EJS_Buttons = { restart: false };
   window.EJS_defaultOptions = { 'save-state-location': 'browser' };
+  window.EJS_DEBUG_XX = true;
   
   let rawData = await getSaveBlob(uniqueId);
   if (rawData) {
