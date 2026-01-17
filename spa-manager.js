@@ -6,8 +6,8 @@
 const APP_CONFIG = {
   ejsPath: "emulatorjs/4.0.9/data/",
   core: "mednafen_psx_hw",
-  biosUrl: "/api/serve-game?key=bios",
-  gameUrl: "/api/serve-game?key=rom",
+  biosUrl: "/api/serve-game/scph5501.bin?key=bios", 
+  gameUrl: "/api/serve-game/RPG_Maker_USA.zip?key=rom", 
   
   versions: {
     'og': {

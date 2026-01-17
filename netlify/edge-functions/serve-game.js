@@ -56,4 +56,4 @@ function isLocal(url) {
   return url.hostname === "localhost" || url.hostname === "127.0.0.1";
 }
 
-export const config = { path: "/api/serve-game" };
+export const config = { path: "/api/serve-game/*" };
