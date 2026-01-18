@@ -856,7 +856,7 @@ async function renderSaveSlots(verId, container) {
   // 2. Tab-Style Close Button (Only in SAVE/LOAD - In Game)
   if (globalMode === 'SAVE' || globalMode === 'LOAD') {
     // Switch to relative position for in game menu to center over game screen
-    document.querySelector('.save-slot-container.open').style.position = "relative";
+    document.querySelector('.save-slot-container').style.position = "relative";
     const closeRow = document.createElement('div');
     closeRow.style.cssText = "display: flex; justify-content: center; background: rgba(255,255,255,0.15); margin-top: 10px; border-radius: 25px; cursor: pointer; padding: 5px;";
     closeRow.onclick = closeInGameMenu;
