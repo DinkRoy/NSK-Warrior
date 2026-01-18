@@ -38,7 +38,7 @@ const APP_CONFIG = {
       prefix: "TEST_PLAY",
       loadState: "/versions/test-play/RPG Maker (USA).state",
       slots: 8,
-      updated: "1.0",
+      updated: "1.1", // Jim broom dialogue 
       info: true
     }
   }
