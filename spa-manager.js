@@ -31,14 +31,14 @@ const APP_CONFIG = {
       slots: 8,
       legacyKeys: ["NSK WARRIOR KF"],
       comingSoon: false,
-      updated: "1.0"
+      updated: "1.1"
     },
     'tp': {
       label: "Test Play",
       prefix: "TEST_PLAY",
       loadState: "/versions/test-play/RPG Maker (USA).state",
       slots: 8,
-      updated: "1.2", // Jim broom dialogue, secret tower dialogue, filter room 
+      updated: "1.3", // Jim broom dialogue, secret tower dialogue, filter room 
       info: true
     }
   }
